@@ -1,4 +1,4 @@
-# This folder contains Azure virtual machine deployment patterns using most bash scripts and Azure CLI
+# This folder contains Azure virtual machine deployment patterns using mostly bash scripts and Azure CLI
 
 ## Single Virtual Machine
 ## VM scale sets
