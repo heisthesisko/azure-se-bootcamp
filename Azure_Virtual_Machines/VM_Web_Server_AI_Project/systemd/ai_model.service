@@ -1,0 +1,12 @@
+[Unit]
+Description=AI Model Flask Service
+After=network.target
+
+[Service]
+User=azureuser
+WorkingDirectory=/home/azureuser/ai_model
+ExecStart=/usr/bin/python3 /home/azureuser/ai_model/ai_model.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

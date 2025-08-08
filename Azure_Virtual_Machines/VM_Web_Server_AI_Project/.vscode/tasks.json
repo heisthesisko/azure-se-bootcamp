@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Azure: 10-network",
+      "type": "shell",
+      "command": "bash infra/10-network.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Azure: 20-vmss-web",
+      "type": "shell",
+      "command": "bash infra/20-vmss-web.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Azure: 30-postgres",
+      "type": "shell",
+      "command": "bash infra/30-postgres.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Azure: 40-ai-vm",
+      "type": "shell",
+      "command": "bash infra/40-ai-vm.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "VMSS: 25-web-update (explicit URL)",
+      "type": "shell",
+      "command": "bash infra/25-web-update.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "VMSS: 25-web-update (from this repo)",
+      "type": "shell",
+      "command": "bash infra/25-web-update-from-this-repo.sh",
+      "problemMatcher": []
+    }
+  ]
+}
