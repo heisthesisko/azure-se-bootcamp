@@ -8,43 +8,6 @@ This guide walks students through deploying a full-stack solution on Azure using
 
 ![OVerview](assets/images/Web_Server_AI_Project_Overview.png)
 
-```mermaid
-flowchart TD
-    %% Mobile Client
-    Mobile["📱  Mobile Device "] --> PublicLB["🌐  Azure Public Load Balancer "]
-
-    %% Front-end Webservers VMSS
-    subgraph FrontEndVMSS["🖥️  VM Scale Set Frontend"]
-        direction TB
-        PublicLB --> VM1["🧾  Ubuntu - Apache & PHP"]
-        PublicLB --> VM2["🧾  Ubuntu - Apache & PHP"]
-        PublicLB --> VM3["🧾  Ubuntu - Apache & PHP"]
-    end
-
-    %% Internal Load Balancer to Database
-    FrontEndVMSS --> InternalLB["🔒  Azure Internal Load Balancer "]
-
-    %% PostgreSQL Availability Set with Replication
-    subgraph PGSet["🗄️  Availability Set - PostgreSQL "]
-        direction LR
-        subgraph FaultDomain1["💡 Fault Domain 1"]
-            VMPrimary["📌  PostgreSQL Primary"]
-        end
-        subgraph FaultDomain2["💡 Fault Domain 2"]
-            VMReplica["📄  PostgreSQL Replica (Streaming)"]
-        end
-    end
-
-    InternalLB --> VMPrimary
-    InternalLB --> VMReplica
-
-    %% AI Model Server
-    FrontEndVMSS --> AIModel["🤖  AI Model VM (CentOS / AlmaLinux)"]
-
-    %% Data Flow
-    VMPrimary -.->|Streaming Replication| VMReplica
-```
-
 ---
 
 ## 🧰 Prerequisites
