@@ -11,25 +11,29 @@ This repository is designed for **students using Visual Studio Code**. It contai
 
 ## 📐 Architecture (Mermaid)
 
+![OVerview](assets/images/Web_Server_AI_Project_Overview.png)
+
 ```mermaid
+%%{init: {'flowchart': {'rankSpacing': 120, 'nodeSpacing': 60}}}%%
 flowchart TD
-    Mobile[Mobile Device] --> PublicLB[Azure Public Load Balancer]
+Mobile["Mobile Device"] --> PublicLB["Azure Public Load Balancer"]
 
-    subgraph FrontEndVMSS[VM Scale Set - Frontend (Ubuntu + Apache + PHP)]
-        direction TB
-        PublicLB --> VM1[Web VM #1]
-        PublicLB --> VM2[Web VM #2]
-        PublicLB --> VM3[Web VM #3]
-    end
+subgraph FrontEndVMSS["VM Scale Set - Frontend (Ubuntu + Apache + PHP)"]
+direction TB
+PublicLB --> VM1["Web VM #1"]
+PublicLB --> VM2["Web VM #2"]
+PublicLB --> VM3["Web VM #3"]
+end
 
-    FrontEndVMSS -->|HTTP/AI calls| AIModel[AI Model VM (CentOS/AlmaLinux + Flask + EfficientNet)]
+FrontEndVMSS -->|"HTTP / AI calls"| AIModel["AI Model VM (CentOS/AlmaLinux + Flask + EfficientNet)"]
 
-    subgraph PGSet[Availability Set - PostgreSQL]
-        direction LR
-        PGPrimary[PostgreSQL Primary] -. streaming replication .-> PGReplica[PostgreSQL Replica]
-    end
+subgraph PGSet["Availability Set - PostgreSQL"]
+direction LR
+PGPrimary["PostgreSQL Primary"] -. "streaming replication" .-> PGReplica["PostgreSQL Replica"]
+end
 
-    FrontEndVMSS -->|DB writes/reads| PGPrimary
+FrontEndVMSS -->|"DB writes / reads"| PGPrimary
+
 ```
 
 ---
