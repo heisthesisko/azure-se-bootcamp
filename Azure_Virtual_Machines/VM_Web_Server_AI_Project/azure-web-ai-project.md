@@ -6,6 +6,8 @@ This guide walks students through deploying a full-stack solution on Azure using
 
 ## 📐 Architecture Overview
 
+![OVerview](assets/images/Web_Server_AI_Project_Overview.png)
+
 ```mermaid
 flowchart TD
     %% Mobile Client
