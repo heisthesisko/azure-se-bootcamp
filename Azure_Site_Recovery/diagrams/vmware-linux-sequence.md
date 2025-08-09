@@ -22,12 +22,13 @@ sequenceDiagram
     Student->>Vault: Enable replication (target region, VNet, size, policy)
     Appliance->>Vault: Seed initial replication metadata
     Appliance->>Azure: Replicate disks (HTTPS) (continuous)
-    Note over Appliance,Azure: Change tracking; RPO as per policy
+    Note over Appliance,Azure: Change tracking\nRPO as per policy
 
     Student->>Vault: Test Failover (create test VMs)
     Vault->>Azure: Create test VMs from recovery points
     Azure->>TestVNet: Attach NICs
-    Student->>Azure: Validate http://<test-ip>/app/
+    Student->>Azure: Validate http://`<test-ip>`/app/
+
     Student->>Vault: Cleanup test failover (remove test VMs)
 
     opt Planned Failover (real DR)
@@ -37,6 +38,7 @@ sequenceDiagram
         Appliance->>Azure: Sync last changes + finalize
         Vault->>Azure: Create production VMs
         Student->>Vault: Commit failover
-        Student->>Vault: Reprotect (Azure->On‑prem)
+        Student->>Vault: Reprotect (Azure->On-prem)
     end
+
 ```

@@ -11,8 +11,7 @@ This repository is designed for **students using Visual Studio Code**. It contai
 
 ## 📐 Architecture (Mermaid)
 
-![OVerview](assets/images/Web_Server_AI_Project_Overview.png)
-
+![OVerview](assets/images/Web_Server_AI_Project_Overview_v2.png)
 
 ---
 
