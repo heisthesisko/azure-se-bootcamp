@@ -29,7 +29,7 @@ flowchart TD
     InternalLB --> VMReplica
 
     %% AI Model Server
-    FrontEndVMSS --> AIModel["🤖  AI Model VM (CentOS / AlmaLinux)"]
+    FrontEndVMSS --> |"HTTP / AI calls"| AIModel["🤖  AI Model VM (CentOS/AlmaLinux + Flask + EfficientNet"]
 
     %% Data Flow
     VMPrimary -.->|Streaming Replication| VMReplica
