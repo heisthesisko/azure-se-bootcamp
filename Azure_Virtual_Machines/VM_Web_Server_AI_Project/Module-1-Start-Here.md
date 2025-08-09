@@ -9,7 +9,7 @@ This repository is designed for **students using Visual Studio Code**. It contai
 
 ---
 
-## 📐 Architecture (Mermaid)
+## 📐 Architecture Overview
 
 ![OVerview](assets/images/Web_Server_AI_Project_Overview_v2.png)
 
@@ -30,6 +30,7 @@ This repository is designed for **students using Visual Studio Code**. It contai
 ```
 config/
   env.sh                  # Environment variables you edit once
+
 infra/
   10-network.sh           # VNet, Subnets, NSGs
   20-vmss-web.sh          # Web VMSS creation + Apache/PHP install
@@ -37,9 +38,11 @@ infra/
   25-web-update-from-this-repo.sh  # Helper to compute your repo ZIP URL from 'git remote'
   30-postgres.sh          # Create Postgres VMs (Availability Set)
   40-ai-vm.sh             # Create AI VM
+
 scripts/
   db-setup.sh             # Run on PG VMs (primary/replica) via SSH
   ai-setup.sh             # Run on AI VM via SSH
+
 app/
   web/                    # PHP webapp
     index.php
@@ -47,10 +50,13 @@ app/
     view_images.php
   ai/
     ai_model.py           # Flask app (top-3 predictions + confidence)
+
 systemd/
   ai_model.service        # systemd unit for Flask app
+
 db/
   schema.sql              # images table
+  
 .vscode/
   extensions.json         # Recommended VS Code extensions
   tasks.json              # Ready-made tasks to run infra scripts
