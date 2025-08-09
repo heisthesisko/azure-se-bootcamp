@@ -1,0 +1,2 @@
+<?php
+return ['db'=>['driver'=>'sqlsrv','server'=>'win-db\SQLEXPRESS','dbname'=>'trek_northwind','user'=>'sa','password'=>'P@ssw0rd!123']];

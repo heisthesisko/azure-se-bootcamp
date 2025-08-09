@@ -1,0 +1,1 @@
+-- Full schema included in chat; abbreviated here for brevity.

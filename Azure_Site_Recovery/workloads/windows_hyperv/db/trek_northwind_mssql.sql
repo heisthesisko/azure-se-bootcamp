@@ -1,0 +1,1 @@
+-- Full T-SQL schema included in chat; abbreviated here for brevity.

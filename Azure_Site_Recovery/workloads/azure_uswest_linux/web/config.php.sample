@@ -1,0 +1,2 @@
+<?php
+return ['db'=>['driver'=>'pgsql','host'=>'localhost','port'=>5432,'dbname'=>'trek_northwind','user'=>'postgres','password'=>'postgres']];
