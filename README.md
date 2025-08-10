@@ -30,3 +30,4 @@ Repository for various Azure Infrastructure workshops and PoC starters. Current 
   + ARO Virtualization to run VM's
 + Azure Container Services
 + Azure Arc
++ Azure Monitoring
