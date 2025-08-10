@@ -9,6 +9,21 @@ Repository for various Azure Infrastructure workshops and PoC starters. Current 
 + Azure Site Recovery
 + Azure Backup
 + Azure Networking
+  + Azure Virtual Network (VNet)
+  + Network Security Group (NSG)
+  + Azure Firewall
+  + Azure DDoS Protection
+  + VPN Gateway
+  + ExpressRoute
+  + Azure Private Link (Private Endpoint)
+  + NAT Gateway
+  + Azure Load Balancer
+  + Azure Application Gateway (WAF)
+  + Azure Front Door (CDN + L7 LB)
+  + Traffic Manager (DNS GSLB)
+  + Virtual WAN
+  + Gateway Load Balancer
+  + Azure DNS (Public & Private)
 + Azure Storage
 + Azure RedHat Openshift
   + ARO Clusters
