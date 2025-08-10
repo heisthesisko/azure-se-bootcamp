@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Azure: Login",
+      "type": "shell",
+      "command": "bash scripts/login.sh"
+    },
+    {
+      "label": "Set env",
+      "type": "shell",
+      "command": "source config/env.sh && env | grep WORKSHOP_"
+    },
+    {
+      "label": "Module 01 - VNet",
+      "type": "shell",
+      "command": "bash infra/m01_vnet.sh"
+    },
+    {
+      "label": "Module 02 - NSG",
+      "type": "shell",
+      "command": "bash infra/m02_nsg.sh"
+    },
+    {
+      "label": "Cleanup RG",
+      "type": "shell",
+      "command": "bash scripts/cleanup.sh"
+    }
+  ]
+}

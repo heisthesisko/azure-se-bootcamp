@@ -1,0 +1,8 @@
+flowchart TB
+subgraph Azure
+  VNet["VNet 10.0.0.0/16"]
+  Subnet["web-subnet 10.0.1.0/24"]
+  VM["VM1"]
+  VNet --> Subnet --> VM
+end
+Internet --> VM

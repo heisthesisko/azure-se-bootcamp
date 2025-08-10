@@ -1,0 +1,9 @@
+flowchart LR
+subgraph Hub
+  FW["Azure Firewall"]
+end
+subgraph Spoke
+  VM["VM1"]
+end
+Internet --> FW --> VM
+VM --> FW --> Internet

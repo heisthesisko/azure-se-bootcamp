@@ -1,0 +1,15 @@
+configure
+set vpn ipsec ike-group AzureIKE proposal 1 dh-group '14'
+set vpn ipsec ike-group AzureIKE proposal 1 encryption 'aes256'
+set vpn ipsec ike-group AzureIKE proposal 1 hash 'sha1'
+set vpn ipsec esp-group AzureIPSec proposal 1 encryption 'aes256'
+set vpn ipsec esp-group AzureIPSec proposal 1 hash 'sha1'
+set vpn ipsec site-to-site peer AZURE address <AzureVPNPublicIP>
+set vpn ipsec site-to-site peer AZURE authentication mode pre-shared-secret
+set vpn ipsec site-to-site peer AZURE authentication pre-shared-secret 'P@ssw0rd123'
+set vpn ipsec site-to-site peer AZURE ike-group AzureIKE
+set vpn ipsec site-to-site peer AZURE esp-group AzureIPSec
+set vpn ipsec site-to-site peer AZURE local-address <VyOS_WAN_IP>
+set vpn ipsec site-to-site peer AZURE tunnel 1 local prefix 192.168.0.0/24
+set vpn ipsec site-to-site peer AZURE tunnel 1 remote prefix 10.0.0.0/16
+commit; save
