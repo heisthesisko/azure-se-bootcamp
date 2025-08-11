@@ -8,6 +8,7 @@ Repository for various Azure Infrastructure workshops and PoC starters. Current 
   + Azure VM Availability Sets
 + Azure Site Recovery
 + Azure Backup
++ Azure Migrate
 + Azure Networking
   + Azure Virtual Network (VNet)
   + Network Security Group (NSG)
