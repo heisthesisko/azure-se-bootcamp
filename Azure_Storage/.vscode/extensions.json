@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-vscode.azurecli",
+    "ms-azuretools.vscode-azureresourcegroups",
+    "ms-vscode.vscode-node-azure-pack",
+    "bierner.markdown-mermaid",
+    "yzhang.markdown-all-in-one"
+  ]
+}

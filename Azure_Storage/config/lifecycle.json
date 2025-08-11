@@ -1,0 +1,23 @@
+
+{
+  "rules": [
+    {
+      "name": "cool-after-30-archive-after-180",
+      "enabled": true,
+      "type": "Lifecycle",
+      "definition": {
+        "filters": {
+          "blobTypes": [ "blockBlob" ],
+          "prefixMatch": [ "images/" ]
+        },
+        "actions": {
+          "baseBlob": {
+            "tierToCool": { "daysAfterModificationGreaterThan": 30 },
+            "tierToArchive": { "daysAfterModificationGreaterThan": 180 },
+            "delete": { "daysAfterModificationGreaterThan": 365 }
+          }
+        }
+      }
+    }
+  ]
+}

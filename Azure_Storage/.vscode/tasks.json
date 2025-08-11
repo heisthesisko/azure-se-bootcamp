@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Workshop: Prereqs",
+      "type": "shell",
+      "command": "bash scripts/00_prereqs.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Workshop: Provision Core",
+      "type": "shell",
+      "command": "bash scripts/01_storage_account.sh",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+
+[Unit]
+Description=AI Uploader Sample
+After=network.target
+
+[Service]
+Type=simple
+Environment="SA_NAME=%i"
+Environment="CONTAINER=images"
+ExecStart=/usr/bin/python3 /opt/workshop/app/ai/upload_and_queue.py /opt/workshop/assets/images/sample1.txt
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
