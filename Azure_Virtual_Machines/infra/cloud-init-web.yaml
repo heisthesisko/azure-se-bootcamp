@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+packages:
+  - apache2
+  - php
+  - php-pgsql
+  - unzip
+  - jq
+runcmd:
+  - systemctl enable apache2
+  - systemctl start apache2
+  - mkdir -p /var/www/html/app
+  - curl -fSL https://raw.githubusercontent.com/placeholder/repo/main/app/web/index.php -o /var/www/html/index.php || true
+  - chown -R www-data:www-data /var/www/html
+  - a2enmod php* || true
+  - systemctl restart apache2

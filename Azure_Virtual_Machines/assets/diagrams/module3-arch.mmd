@@ -1,0 +1,12 @@
+flowchart TB
+  subgraph Azure VNet
+    VMSS["VM Scale Set (Ubuntu)"]
+    LB["Public Load Balancer + Probe"]
+    AI["FastAPI Imaging Service"]
+  end
+  Internet --> LB --> VMSS
+  VMSS --> AI
+  subgraph Data
+    Blob["Storage (DICOM samples)"]
+  end
+  VMSS --- Blob

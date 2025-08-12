@@ -1,1 +1,0 @@
-## Location for images and other shared assets across this repo folder

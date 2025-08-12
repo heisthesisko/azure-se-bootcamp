@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant Clinician App
+  participant LB
+  participant VM as VMSS Instance
+  Clinician App->>LB: POST /infer (DICOM)
+  LB->>VM: Forward request
+  VM->>VM: Run model (CPU)
+  VM-->>Clinician App: JSON { finding: ... , confidence: ... }

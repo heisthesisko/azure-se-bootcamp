@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant PACS
+  participant ANF as NetApp Files
+  participant VM as Imaging VM
+  PACS->>ANF: Write studies (NFS)
+  VM->>ANF: Mount /mnt/anf-data
+  VM->>VM: Process + index metadata
+  VM-->>ANF: Store outputs/reports

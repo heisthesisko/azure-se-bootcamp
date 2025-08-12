@@ -1,0 +1,12 @@
+flowchart TB
+  subgraph Azure VNet
+    AS["Availability Set"]
+    VM2A["ehr-web-01"]
+    VM2B["ehr-web-02"]
+    LB["Internal Load Balancer"]
+    PGFlex["Azure Database for PostgreSQL (optional)"]
+  end
+  User --> LB --> VM2A
+  LB --> VM2B
+  VM2A --> PGFlex
+  VM2B --> PGFlex

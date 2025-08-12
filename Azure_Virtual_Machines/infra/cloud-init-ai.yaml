@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+packages:
+  - python3
+  - python3-pip
+  - python3-venv
+  - unzip
+runcmd:
+  - useradd -m aiuser || true
+  - su - aiuser -c "python3 -m venv ~/venv && ~/venv/bin/pip install --upgrade pip"
+  - su - aiuser -c "mkdir -p ~/app && printf 'from fastapi import FastAPI\napp=FastAPI()\n@app.get(\"/healthz\")\ndef h(): return {"ok":True}' > ~/app/app.py"
+  - su - aiuser -c "~/venv/bin/pip install fastapi uvicorn"
+  - printf "[Unit]\nDescription=AI API\nAfter=network.target\n[Service]\nUser=aiuser\nExecStart=/home/aiuser/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8080\nRestart=always\n[Install]\nWantedBy=multi-user.target\n" > /etc/systemd/system/ai.service
+  - systemctl daemon-reload
+  - systemctl enable ai.service
+  - systemctl start ai.service

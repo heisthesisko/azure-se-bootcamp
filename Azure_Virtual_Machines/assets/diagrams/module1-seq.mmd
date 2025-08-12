@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant User
+  participant Web as PHP Web VM
+  participant DB as On-Prem PostgreSQL
+  User->>Web: Submit patient intake (MRN, DOB, symptoms)
+  Web->>DB: INSERT patient_intake
+  DB-->>Web: 200 OK
+  Web-->>User: Intake confirmation (no PHI echoed)

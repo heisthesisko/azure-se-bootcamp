@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Login Azure",
+      "type": "shell",
+      "command": "az login",
+      "problemMatcher": []
+    },
+    {
+      "label": "Module 1 - Single VM Deploy",
+      "type": "shell",
+      "command": "bash scripts/10_module1_single_vm.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Module 2 - Availability Set",
+      "type": "shell",
+      "command": "bash scripts/20_module2_avset.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Module 3 - VM Scale Set",
+      "type": "shell",
+      "command": "bash scripts/30_module3_vmss.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Module 4 - NetApp Files",
+      "type": "shell",
+      "command": "bash scripts/40_module4_netapp.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cleanup",
+      "type": "shell",
+      "command": "bash scripts/99_cleanup.sh",
+      "problemMatcher": []
+    }
+  ]
+}

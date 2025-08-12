@@ -1,0 +1,12 @@
+[Unit]
+Description=Imaging Inference API (Training)
+After=network.target
+
+[Service]
+User=azureuser
+WorkingDirectory=/opt/ai
+ExecStart=/opt/ai/venv/bin/uvicorn imaging_infer:app --host 0.0.0.0 --port 8080
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

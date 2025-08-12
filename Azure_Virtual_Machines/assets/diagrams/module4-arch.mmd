@@ -1,0 +1,12 @@
+flowchart TB
+  subgraph Azure VNet
+    VM4["vm-imaging-01"]
+    ANF["Azure NetApp Files Volume (NFSv3)"]
+  end
+  VM4 --- ANF
+  subgraph Workflow
+    PACS["PACS Export"]
+    AI["AI Post-Processing"]
+  end
+  PACS --> ANF
+  VM4 --> AI

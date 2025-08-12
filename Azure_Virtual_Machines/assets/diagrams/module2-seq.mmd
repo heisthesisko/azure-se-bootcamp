@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant Client
+  participant LB as Azure ILB
+  participant Web1
+  participant Web2
+  Client->>LB: HTTPS /ehr/process
+  alt Healthy Web1
+    LB->>Web1: Forward request
+    Web1-->>Client: 200 (processed)
+  else Web1 down
+    LB->>Web2: Forward request
+    Web2-->>Client: 200 (processed)
+  end
