@@ -16,7 +16,7 @@
 - Create container, queue, table, filesystem.
 
 ## Architecture Diagram
-    ```mermaid
+```mermaid
 flowchart TB
   subgraph OnPrem[On-Prem &#40;Hyper-V&#41;]
     Web[(Apache Web)]
@@ -41,8 +41,8 @@ flowchart TB
   VM --> SA
 ```
 
-    > [!IMPORTANT]
-    > Run `bash scripts/00_prereqs.sh` then `bash scripts/01_storage_account.sh` before this module (unless this *is* Module 01).
+> [!IMPORTANT]
+> Run `bash scripts/00_prereqs.sh` then `bash scripts/01_storage_account.sh` before this module (unless this *is* Module 01).
 
     ## Lab Steps
     1. Load environment and login:
