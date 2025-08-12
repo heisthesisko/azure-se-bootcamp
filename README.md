@@ -2,11 +2,11 @@
 
 Repository for various Azure Infrastructure workshops and PoC starters. Current content includes the following products and services:
 
-+ Azure Virtual Machines
++ [Azure Virtual Machines](Azure_Virtual_Machines)
   + Singleton VM
   + Azure VM Scale Sets
   + Azure VM Availability Sets
-+ Azure Site Recovery
++ [Azure Site Recovery](Azure_Site_Recovery)
 + Azure Backup
 + Azure Migrate
 + [Azure Networking](Azure_Networking)
@@ -25,7 +25,7 @@ Repository for various Azure Infrastructure workshops and PoC starters. Current 
   + Virtual WAN
   + Gateway Load Balancer
   + Azure DNS (Public & Private)
-+ Azure Storage
++ [Azure Storage](Azure_Storage)
 + Azure RedHat Openshift
   + ARO Clusters
   + ARO Virtualization to run VM's
