@@ -1,21 +1,21 @@
 
-    # Module01: Azure Storage Account
+# Module01: Azure Storage Account
 
-    **Top Problems/Features Addressed**
-    1. Durable, scalable storage is needed for diverse data types.
-1. Secure endpoints with encryption and networking controls are required.
+**Top Problems/Features Addressed**
+1. Durable, scalable storage is needed for diverse data types.
+2. Secure endpoints with encryption and networking controls are required.
 
-    **Intent & Learning Objectives**
-    - Understand Azure Storage Account and when to use it.
-    - Deploy and validate using Bash + Azure CLI.
-    - Demonstrate three or more core features.
+**Intent & Learning Objectives**
+  - Understand Azure Storage Account and when to use it.
+  - Deploy and validate using Bash + Azure CLI.
+  - Demonstrate three or more core features.
 
-    **Key Features Demonstrated**
-    - Create StorageV2 with ADLS Gen2 (HNS).
+**Key Features Demonstrated**
+- Create StorageV2 with ADLS Gen2 (HNS).
 - Enable blob versioning and soft delete.
 - Create container, queue, table, filesystem.
 
-    ## Architecture Diagram
+## Architecture Diagram
     ```mermaid
 flowchart TB
   subgraph OnPrem[On-Prem &#40;Hyper-V&#41;]
@@ -39,7 +39,6 @@ flowchart TB
   VyOS -.->|VPN| VNet
   VNet --> PE --> SA
   VM --> SA
-
 ```
 
     > [!IMPORTANT]
