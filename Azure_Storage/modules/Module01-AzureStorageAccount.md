@@ -17,29 +17,30 @@
 
     ## Architecture Diagram
     ```mermaid
-
 flowchart TB
-  subgraph OnPrem (Hyper-V)
+  subgraph OnPrem[On-Prem &#40;Hyper-V&#41;]
     Web[(Apache Web)]
     DB[(PostgreSQL)]
     AI[(AI Model Server)]
     VyOS[VyOS VPN]
   end
-  subgraph Azure
+
+  subgraph Azure[Azure]
     VNet["VNet + Subnets"]
     SA["Storage Account (Blob/Files/Queue/Table/ADLS Gen2)"]
     VM["Ubuntu VM"]
     KV["Key Vault"]
     PE["Private Endpoints"]
   end
-  Web -->|SAS| SA
-  AI -->|Upload + Queue| SA
-  DB -->|Logs (Table)| SA
-  VyOS -. VPN .- VNet
+
+  Web -- SAS --> SA
+  AI -- "Upload + Queue" --> SA
+  DB -- "Logs (Table)" --> SA
+  VyOS -.->|VPN| VNet
   VNet --> PE --> SA
   VM --> SA
 
-    ```
+```
 
     > [!IMPORTANT]
     > Run `bash scripts/00_prereqs.sh` then `bash scripts/01_storage_account.sh` before this module (unless this *is* Module 01).
