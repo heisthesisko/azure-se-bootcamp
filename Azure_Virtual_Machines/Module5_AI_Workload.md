@@ -1,9 +1,7 @@
-# This folder contains Azure virtual machine deployment patterns using mostly bash scripts and Azure CLI
+# This module pulls together the usage of VM's to deploy a scalable and highly available using Scale and Availability with a simplistic sovereign AI model.
 
-+ Single Virtual Machine
-+ VM scale sets
-+ VM availability sets
-+ Web Server and AI Project to bring it all together
+> [!TIP]
+> This module has a separate file structure and the document to deploy the workload can be found here [AI Workload](AI_Workload_Folder/Module5_AI_Workload_Guide.md)
 
 ```mermaid
 flowchart TD
