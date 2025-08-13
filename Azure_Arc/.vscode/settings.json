@@ -1,0 +1,6 @@
+{
+  "files.exclude": {
+    "**/.gitkeep": true
+  },
+  "markdown-preview-enhanced.mermaidEngine": "mermaid"
+}

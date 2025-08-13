@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-azureterraform",
+    "ms-azuretools.vscode-azureresourcegroups",
+    "ms-azuretools.vscode-bicep",
+    "ms-vscode.azurecli",
+    "redhat.vscode-yaml",
+    "bierner.markdown-mermaid"
+  ]
+}

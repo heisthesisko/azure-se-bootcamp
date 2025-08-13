@@ -1,0 +1,5 @@
+flowchart TB
+  ArcAgent["Arc Connected Machine Agent"]:::rb --> Azure["Azure Arc Service"]:::az
+  Azure --> Ext["Extensions (Monitoring, Defender)"]:::az
+  classDef az fill:#B3E6FF,stroke:#333;
+  classDef rb fill:#FFE6CC,stroke:#333;

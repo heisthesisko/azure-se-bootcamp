@@ -1,0 +1,9 @@
+flowchart LR
+  Azure["Azure Portal (Arc)"]:::az --> RB["Resource Bridge Appliance"]:::rb
+  RB --> HV["Hypervisor (SCVMM/vCenter)"]:::onp
+  HV --> VM1["EHR App VM"]:::vm
+  HV --> VM2["DB VM"]:::vm
+  classDef az fill:#B3E6FF,stroke:#333;
+  classDef rb fill:#FFE6CC,stroke:#333;
+  classDef onp fill:#DDD,stroke:#333;
+  classDef vm fill:#FFCCCC,stroke:#333;

@@ -1,0 +1,13 @@
+# VyOS IPsec template (replace placeholders)
+set vpn ipsec ike-group azure-ike proposal 10 encryption aes256
+set vpn ipsec ike-group azure-ike proposal 10 hash sha256
+set vpn ipsec esp-group azure-esp proposal 10 encryption aes256
+set vpn ipsec esp-group azure-esp proposal 10 hash sha256
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication mode pre-shared-secret
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication pre-shared-secret <AZ_VPN_SHARED_KEY>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> ike-group azure-ike
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> local-address <ONPREM_PUBLIC_IP>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 esp-group azure-esp
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 local prefix <ONPREM_ADDRESS_SPACE>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 remote prefix <AZ_VNET_CIDR>
+commit; save

@@ -1,0 +1,8 @@
+flowchart LR
+  subgraph OnPrem K8s
+    Agents["Arc K8s Agents"]:::rb --> API["K8s API"]:::onp
+  end
+  Agents --> AzureArc["Azure Arc (K8s)"]:::az
+  classDef az fill:#B3E6FF,stroke:#333;
+  classDef rb fill:#FFE6CC,stroke:#333;
+  classDef onp fill:#DDD,stroke:#333;

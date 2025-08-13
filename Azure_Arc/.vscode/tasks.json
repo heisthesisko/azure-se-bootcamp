@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "00 - Prereqs",
+      "type": "shell",
+      "command": "bash infra/00_prereqs.sh"
+    },
+    {
+      "label": "01 - Network",
+      "type": "shell",
+      "command": "bash infra/01_network_setup.sh"
+    },
+    {
+      "label": "02 - Onboard Arc Servers",
+      "type": "shell",
+      "command": "bash infra/02_onboard_arc_servers.sh"
+    },
+    {
+      "label": "03 - Connect Arc K8s",
+      "type": "shell",
+      "command": "bash infra/03_connect_arc_k8s.sh"
+    }
+  ]
+}
