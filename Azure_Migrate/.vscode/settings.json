@@ -1,0 +1,5 @@
+{
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "files.eol": "\n",
+  "editor.formatOnSave": true
+}

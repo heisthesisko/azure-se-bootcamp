@@ -1,0 +1,5 @@
+sequenceDiagram
+  participant Ops as Operations
+  participant M as Azure Monitor
+  Ops->>M: Query KQL
+  M-->>Ops: Dashboard render

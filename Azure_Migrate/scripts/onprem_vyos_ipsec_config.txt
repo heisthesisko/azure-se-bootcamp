@@ -1,0 +1,16 @@
+# VyOS IPsec Config (sample; adjust to your environment)
+# set interfaces vti vti0 address '169.254.21.2/30'
+# set vpn ipsec ike-group azure proposal 1 encryption 'aes256'
+# set vpn ipsec ike-group azure proposal 1 hash 'sha256'
+# set vpn ipsec ike-group azure lifetime '28800'
+# set vpn ipsec esp-group azure proposal 1 encryption 'aes256'
+# set vpn ipsec esp-group azure proposal 1 hash 'sha256'
+# set vpn ipsec esp-group azure lifetime '3600'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication mode 'pre-shared-secret'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication pre-shared-secret '<SHARED_KEY>'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> ike-group 'azure'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> default-esp-group 'azure'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> local-address '<ONPREM_PUBLIC_IP>'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 local prefix '192.168.10.0/24'
+# set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 remote prefix '10.10.0.0/16'
+# commit; save

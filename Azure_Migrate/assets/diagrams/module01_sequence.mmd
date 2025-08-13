@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant U as User
+  participant P as Azure Migrate Portal
+  participant A as Azure
+  U->>P: Create project
+  P->>A: Initialize resources
+  A-->>P: Project ready
+  P-->>U: Show dashboards

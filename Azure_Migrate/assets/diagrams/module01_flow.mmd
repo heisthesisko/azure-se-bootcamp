@@ -1,0 +1,7 @@
+flowchart TB
+  User --> Portal
+  Portal -->|Create Project| AzureMigrate
+  AzureMigrate -->|Track| Reports
+  subgraph Azure
+    AzureMigrate[Azure Migrate]
+  end

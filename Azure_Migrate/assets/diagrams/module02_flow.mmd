@@ -1,0 +1,7 @@
+flowchart TB
+  subgraph OnPrem[On-Prem Hospital]
+    HV[Hyper-V] --> VMs[(Ubuntu/Rocky VMs)]
+    Appliance[Azure Migrate Appliance]
+  end
+  Appliance -->|Metadata only| AzureMigrate
+  AzureMigrate --> Inventory

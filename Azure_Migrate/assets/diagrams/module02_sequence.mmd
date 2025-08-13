@@ -1,0 +1,7 @@
+sequenceDiagram
+  participant App as Migrate Appliance
+  participant OnPrem as Hyper-V
+  participant Cloud as Azure Migrate
+  App->>OnPrem: Query hosts
+  App->>Cloud: Send inventory metadata
+  Cloud-->>App: Discovery summary

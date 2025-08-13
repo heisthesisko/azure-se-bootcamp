@@ -1,0 +1,12 @@
+[Unit]
+Description=Healthcare AI Demo Service
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/hc-ai
+ExecStart=/usr/bin/python3 /opt/hc-ai/app.py
+Restart=always
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

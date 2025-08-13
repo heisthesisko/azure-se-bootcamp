@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Train AI model",
+      "type": "shell",
+      "command": "python app/ai/train.py"
+    },
+    {
+      "label": "Run AI service",
+      "type": "shell",
+      "command": "python app/ai/app.py"
+    }
+  ]
+}

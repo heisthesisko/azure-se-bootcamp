@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant U as Clinician
+  participant Web as Web App
+  participant DB as PostgreSQL
+  U->>Web: HTTP GET /patients
+  Web->>DB: SELECT * FROM patients
+  DB-->>Web: Rows
+  Web-->>U: Render page

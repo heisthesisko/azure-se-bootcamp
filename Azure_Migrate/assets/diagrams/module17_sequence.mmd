@@ -1,0 +1,6 @@
+sequenceDiagram
+  participant ETL as Ingestion
+  participant F as FHIR
+  participant D as DICOM
+  ETL->>F: Upsert resources
+  ETL->>D: Store studies/series

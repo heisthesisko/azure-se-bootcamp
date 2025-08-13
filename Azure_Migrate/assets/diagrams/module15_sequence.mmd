@@ -1,0 +1,5 @@
+sequenceDiagram
+  participant GA as Global Admin
+  participant IAM as RBAC
+  GA->>IAM: Assign roles scoped to RG
+  IAM-->>GA: Access granted (JIT)

@@ -1,0 +1,5 @@
+sequenceDiagram
+  participant Sec as Security
+  participant P as Azure Policy
+  Sec->>P: Assign HIPAA policy set
+  P-->>Sec: Noncompliant resources list
