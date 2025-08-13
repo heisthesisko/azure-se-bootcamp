@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "00: Azure login",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/infra/00_prereqs.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "01: Provision baseline infra + Recovery Services vault",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/infra/01_create_rg_vnet.sh && bash ${workspaceFolder}/infra/02_deploy_recovery_vault.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "02: Enable VM backup + policy",
+      "type": "shell",
+      "command": "bash ${workspaceFolder}/infra/03_backup_vm.sh && bash ${workspaceFolder}/infra/04_policies.sh",
+      "problemMatcher": []
+    }
+  ]
+}

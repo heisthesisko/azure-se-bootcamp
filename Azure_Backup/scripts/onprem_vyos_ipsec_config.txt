@@ -1,0 +1,15 @@
+# VyOS site-to-site IPsec to Azure Virtual Network Gateway (sample)
+# Replace placeholders before applying on VyOS
+set vpn ipsec ike-group IKE-AZ proposal 1 encryption aes256
+set vpn ipsec ike-group IKE-AZ proposal 1 hash sha256
+set vpn ipsec ipsec-interfaces interface eth0
+set vpn ipsec esp-group ESP-AZ proposal 1 encryption aes256
+set vpn ipsec esp-group ESP-AZ proposal 1 hash sha256
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication mode pre-shared-secret
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication pre-shared-secret <SHARED_KEY>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> ike-group IKE-AZ
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> default-esp-group ESP-AZ
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> local-address <ONPREM_PUBLIC_IP>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 local prefix 10.20.0.0/16
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 remote prefix 10.10.0.0/16
+commit; save

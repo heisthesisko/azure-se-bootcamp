@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-azureterraform",
+    "ms-azuretools.vscode-azureresourcegroups",
+    "ms-vscode.azurecli",
+    "ms-azuretools.vscode-azurefunctions",
+    "ms-vscode.cpptools-extension-pack",
+    "ms-dotnettools.csdevkit",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "bmewburn.vscode-intelephense-client",
+    "ms-ossdata.vscode-postgresql"
+  ]
+}

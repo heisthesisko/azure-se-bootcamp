@@ -1,0 +1,11 @@
+---
+title: Module 1 – Azure Backup Vault (Sequence)
+---
+sequenceDiagram
+  participant ClinEng as Clinical Engineer
+  participant Azure as Azure Backup Vault
+  participant Workload as Workload VM
+  ClinEng->>Azure: Configure policy
+  Azure-->>Workload: Trigger snapshot/backup job
+  Workload-->>Azure: Send recovery point
+  ClinEng->>Azure: Validate recovery point & reports

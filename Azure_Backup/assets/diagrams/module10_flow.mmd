@@ -1,0 +1,21 @@
+---
+title: Module 10 – Backup for On‑Premises Servers (Flow)
+---
+flowchart TB
+  subgraph OnPrem [On‑Prem Clinical LAN 10.20.0.0/16]
+    PG[(PostgreSQL EHR metadata)]
+    WEB[Apache PHP Portal]
+    AI[(AI Imaging Server)]
+  end
+  subgraph Azure [Azure VNet 10.10.0.0/16]
+    RSV[Recovery Services Vault]
+    VM[(Linux VM)]
+    SA[(Storage Account)]
+  end
+  OnPrem -->|IPsec| Azure
+  WEB --> PG
+  AI --> PG
+  VM --> RSV
+  SA --> RSV
+  classDef node fill:#eef,stroke:#333,stroke-width:1px;
+  class PG,WEB,AI,RSV,VM,SA node;
