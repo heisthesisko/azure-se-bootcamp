@@ -1,15 +1,23 @@
 flowchart TB
-  subgraph On-Prem (Hyper-V)
+  Internet((Internet))
+
+  subgraph OnPrem["On-Prem (Hyper-V)"]
     VyOS[VyOS S2S VPN]
-    PG[On-Prem PostgreSQL]
+    PG[(On-Prem PostgreSQL)]
   end
-  subgraph Azure VNet (10.10.0.0/16)
+
+  subgraph Azure["Azure VNet (10.10.0.0/16)"]
+    VPNGW[VPN Gateway]
     SubnetWeb["web-subnet (10.10.1.0/24)"]
-    VM1["vm-web-01\nUbuntu + Apache + PHP"]
+    VM1["vm-web-01<br/>Ubuntu + Apache + PHP"]
     Bastion["Azure Bastion"]
   end
+
   Internet --> Bastion
-  VyOS <--VPN--> Azure VNet
+  VyOS <--> |IPsec S2S| VPNGW
   SubnetWeb --- VM1
   PG --- VyOS
   VM1 -->|JDBC/psql| PG
+
+
+

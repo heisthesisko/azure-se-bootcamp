@@ -12,8 +12,41 @@ You will learn: resource grouping, VNet/subnet basics, VM sizing, images, SSH au
 > For training we use a public IP to simplify testing. For PHI, prefer **Azure Bastion**, **private endpoints**, and **WAF/Firewall**. Use TLS and never echo sensitive values in logs.
 
 ## Architecture
-See `assets/diagrams/module1-arch.mmd` and `assets/diagrams/module1-seq.mmd`.
 
+### Flowchat
+```mermaid
+flowchart TB
+  Internet((Internet))
+
+  subgraph OnPrem["On-Prem (Hyper-V)"]
+    VyOS[VyOS S2S VPN]
+    PG[(On-Prem PostgreSQL)]
+  end
+
+  subgraph Azure["Azure VNet (10.10.0.0/16)"]
+    VPNGW[VPN Gateway]
+    SubnetWeb["web-subnet (10.10.1.0/24)"]
+    VM1["vm-web-01<br/>Ubuntu + Apache + PHP"]
+    Bastion["Azure Bastion"]
+  end
+
+  Internet --> Bastion
+  VyOS <--> |IPsec S2S| VPNGW
+  SubnetWeb --- VM1
+  PG --- VyOS
+  VM1 -->|JDBC/psql| PG
+```
+### Sequence Diagram
+```mermaid
+sequenceDiagram
+  participant User
+  participant Web as PHP Web VM
+  participant DB as On-Prem PostgreSQL
+  User->>Web: Submit patient intake (MRN, DOB, symptoms)
+  Web->>DB: INSERT patient_intake
+  DB-->>Web: 200 OK
+  Web-->>User: Intake confirmation (no PHI echoed)
+```
 ## Step-by-Step
 1. **Login & set subscription**
    ```bash
