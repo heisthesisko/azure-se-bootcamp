@@ -13,7 +13,7 @@ You will learn: resource grouping, VNet/subnet basics, VM sizing, images, SSH au
 
 ## Architecture
 
-### Flowchat
+### Flowchart
 ```mermaid
 flowchart TB
   Internet((Internet))
