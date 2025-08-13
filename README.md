@@ -7,7 +7,7 @@ Repository for various Azure Infrastructure workshops and PoC starters. Current 
   + Azure VM Scale Sets
   + Azure VM Availability Sets
 + [Azure Site Recovery](Azure_Site_Recovery)
-+ Azure Backup
++ [Azure Backup](Azure_Backup)
 + Azure Migrate
 + [Azure Networking](Azure_Networking)
   + Azure Virtual Network (VNet)
