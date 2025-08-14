@@ -1,0 +1,13 @@
+# VyOS IPsec S2S config sample (adjust IPs/keys)
+set vpn ipsec ike-group azure-ike proposal 1 encryption aes256
+set vpn ipsec ike-group azure-ike proposal 1 hash sha256
+set vpn ipsec esp-group azure-esp proposal 1 encryption aes256
+set vpn ipsec esp-group azure-esp proposal 1 hash sha256
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication mode pre-shared-secret
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> authentication pre-shared-secret <SHARED_KEY>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> ike-group azure-ike
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> default-esp-group azure-esp
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> local-address <VYOS_PUBLIC_IP>
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 local prefix 10.10.0.0/24
+set vpn ipsec site-to-site peer <AZURE_VPN_PUBLIC_IP> tunnel 1 remote prefix 10.0.0.0/16
+commit; save

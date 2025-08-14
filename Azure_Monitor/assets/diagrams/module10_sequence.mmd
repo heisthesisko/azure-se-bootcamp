@@ -1,0 +1,7 @@
+sequenceDiagram
+  participant U as User
+  participant S as Service
+  participant AM as Azure Monitor
+  U->>S: Request
+  S-->>AM: Telemetry
+  AM-->>U: Insight/Alert

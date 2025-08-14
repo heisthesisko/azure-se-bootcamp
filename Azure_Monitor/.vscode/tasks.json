@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "00_prereqs",
+      "type": "shell",
+      "command": "bash infra/00_prereqs.sh"
+    },
+    {
+      "label": "01_rg_vnet",
+      "type": "shell",
+      "command": "bash infra/01_create_rg_vnet.sh"
+    },
+    {
+      "label": "02_metrics_vm",
+      "type": "shell",
+      "command": "bash infra/02_setup_metrics_vm.sh"
+    }
+  ]
+}

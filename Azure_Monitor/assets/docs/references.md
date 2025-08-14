@@ -1,0 +1,6 @@
+# References (Helpful Reading)
+- Azure Monitor documentation (official)
+- HIPAA Security Rule (audit controls, integrity, access)
+- FHIR specification (AuditEvent resource)
+- DICOM part 15 (security/communication profiles)
+- HITRUST CSF control references (log management, monitoring)
