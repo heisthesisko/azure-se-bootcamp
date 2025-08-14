@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Load env",
+      "type": "shell",
+      "command": "source config/.env && env | sort | sed -n '1,200p'",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create VNet",
+      "type": "shell",
+      "command": "bash infra/01_create_vnet.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "Create ARO Cluster",
+      "type": "shell",
+      "command": "bash infra/02_create_aro_cluster.sh",
+      "problemMatcher": []
+    }
+  ]
+}
