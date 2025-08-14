@@ -1,0 +1,6 @@
+# VyOS IPsec to Azure (sample; adjust for your env)
+# set vpn ipsec ike-group azure-ike proposal 1 encryption aes256
+# set vpn ipsec ike-group azure-ike proposal 1 hash sha256
+# set vpn ipsec esp-group azure-esp proposal 1 encryption aes256gcm128
+# set vpn ipsec esp-group azure-esp proposal 1 hash sha256
+# Configure peers, pre-shared keys, local/remote networks per Azure guide.

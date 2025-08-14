@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-azurecli",
+    "ms-azuretools.vscode-azureaccount",
+    "ms-vscode.azurecli",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid",
+    "ms-python.python",
+    "bmewburn.vscode-intelephense-client"
+  ]
+}

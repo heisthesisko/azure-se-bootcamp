@@ -1,0 +1,7 @@
+{
+  "files.eol": "\n",
+  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "editor.renderWhitespace": "none",
+  "editor.wordWrap": "on",
+  "markdown.mermaid.enabled": true
+}
