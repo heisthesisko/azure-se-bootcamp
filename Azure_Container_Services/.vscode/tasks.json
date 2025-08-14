@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Prereqs",
+      "type": "shell",
+      "command": "bash infra/00_prereqs.sh"
+    },
+    {
+      "label": "Create RG & Network",
+      "type": "shell",
+      "command": "bash infra/01_rg_vnet.sh"
+    }
+  ]
+}

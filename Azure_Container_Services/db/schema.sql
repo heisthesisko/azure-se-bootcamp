@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS audit_event (
+  id SERIAL PRIMARY KEY,
+  ts TIMESTAMP NOT NULL DEFAULT NOW(),
+  actor VARCHAR(128) NOT NULL,
+  action VARCHAR(128) NOT NULL,
+  resource_type VARCHAR(64) NOT NULL,
+  resource_id VARCHAR(128) NOT NULL,
+  outcome VARCHAR(32) NOT NULL,
+  details TEXT
+);

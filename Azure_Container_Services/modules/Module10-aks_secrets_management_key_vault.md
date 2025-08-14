@@ -1,0 +1,41 @@
+# Module 10: AKS Secrets Management (Key Vault)
+
+**Intent & Learning Objectives**  
+Secure storage and management of healthcare secrets and certificates.
+
+> [!IMPORTANT]
+> Treat all lab data as ePHI. Use synthetic data only.
+
+## Top Two Problems This Solves
+1. Secure-by-default deployment for regulated data.
+2. Repeatable automation for healthcare workloads.
+
+## Architecture
+```mermaid
+flowchart LR
+  OnPrem[(On-Prem)] --> AKS
+  AKS --> ACR
+  AKS --> Monitor[Monitor/Defender]
+
+```
+
+**Sequence**
+```mermaid
+sequenceDiagram
+  participant User
+  participant Web as OnPrem PHP
+  participant AKS as AKS
+  User->>Web: Request
+  Web->>AKS: Call
+  AKS-->>Web: Response
+  Web-->>User: Render
+
+```
+
+## Steps
+```bash
+cp config/env.sample config/.env
+bash infra/00_prereqs.sh
+bash infra/01_rg_vnet.sh
+bash infra/module10_aks_secrets_management_key_vault.sh || true
+```

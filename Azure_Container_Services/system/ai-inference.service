@@ -1,0 +1,11 @@
+[Unit]
+Description=Healthcare DICOM AI Inference (Lab)
+After=network.target
+[Service]
+User=www-data
+WorkingDirectory=/opt/ai
+ExecStart=/usr/bin/python3 /opt/ai/dicom_infer.py
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+[Install]
+WantedBy=multi-user.target
