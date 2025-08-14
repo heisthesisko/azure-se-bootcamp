@@ -1,0 +1,16 @@
+%% assets/diagrams/module05_flow.mmd
+flowchart TB
+  subgraph Azure["Azure Subscription"]
+    RG["Resource Group"]
+    VNET["VNet + Subnets"]
+    VM["VM(s): VM Scale Sets"]
+  end
+  subgraph OnPrem["On-Prem (Optional)"]
+    VyOS["VyOS VPN"]
+    DB["PostgreSQL"]
+    Web["Apache/PHP"]
+  end
+  OnPrem <-->|IPsec (Module 14)| Azure
+  Internet -->|Bastion/Private Link| VM
+  VM -->|Logs| LA[(Log Analytics)]
+  VM -->|Backup| RSV[(Recovery Vault)]

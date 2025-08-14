@@ -1,0 +1,14 @@
+%% assets/diagrams/module01_sequence.mmd
+sequenceDiagram
+  autonumber
+  participant Eng as Engineer
+  participant Azure as Azure API
+  participant VM as VM: Wide Range of VM Sizes & Series
+  participant Sec as Defender/Policy
+  participant RSV as Recovery Vault
+  Eng->>Azure: az scripts (Module 01)
+  Azure-->>Eng: 202 Accepted / 200 OK
+  Azure->>VM: Provision/Configure
+  VM->>Sec: Posture signals (logs, findings)
+  VM->>RSV: Backup snapshots
+  Sec-->>Eng: Recommendations / Alerts

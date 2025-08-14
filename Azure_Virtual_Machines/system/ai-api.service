@@ -1,0 +1,13 @@
+# system/ai-api.service
+[Unit]
+Description=AI Triage Inference API (Demo)
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/ai
+ExecStart=/usr/bin/python3 /opt/ai/infer_triage_api.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

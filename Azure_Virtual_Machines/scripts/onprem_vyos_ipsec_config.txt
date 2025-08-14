@@ -1,0 +1,15 @@
+# scripts/onprem_vyos_ipsec_config.txt
+# Example VyOS IPsec site-to-site config to Azure (adjust values from config/.env).
+configure
+set vpn ipsec esp-group azure-lab proposal 1 encryption aes256
+set vpn ipsec esp-group azure-lab proposal 1 hash sha256
+set vpn ipsec ike-group azure-lab proposal 1 encryption aes256
+set vpn ipsec ike-group azure-lab proposal 1 hash sha256
+set vpn ipsec ike-group azure-lab key-exchange ikev2
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP authentication mode pre-shared-secret
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP authentication pre-shared-secret $IPSEC_SHARED_KEY
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP ike-group azure-lab
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP local-address $ONPREM_PUBLIC_IP
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP tunnel 1 local prefix $ONPREM_VNET_CIDR
+set vpn ipsec site-to-site peer $AZURE_VPN_PUBLIC_IP tunnel 1 remote prefix $AZ_VNET_CIDR
+commit; save; exit
