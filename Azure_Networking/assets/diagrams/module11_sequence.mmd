@@ -1,0 +1,10 @@
+%% Module 11 - Application Gateway (WAF) - Sequence
+sequenceDiagram
+  participant User as Engineer
+  participant Azure as Azure Control Plane
+  participant Net as VNet/Resources
+  User->>Azure: az login / az account set
+  User->>Azure: Create/Update Application Gateway (WAF)
+  Azure-->>Net: Deploy artifacts
+  User->>Net: Validate connectivity
+  Net-->>User: Logs / Metrics (LA)

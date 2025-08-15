@@ -1,0 +1,11 @@
+%% Module 5 - Private Endpoints - Flow
+flowchart TB
+  subgraph Azure["Azure Subscription"]
+    RG[("{} Resource Group")]
+    VNet["VNet: 10.10.0.0/16"]
+    Subnets["Subnets: web/app/db/mgmt"]
+  end
+  OnPrem["On-Prem (VyOS + VMs)"]
+  Internet
+  Internet --> VNet
+  OnPrem <---> VNet

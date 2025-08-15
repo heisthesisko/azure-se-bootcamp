@@ -1,0 +1,10 @@
+%% Module 1 - Virtual Network (VNet) - Sequence
+sequenceDiagram
+  participant User as Engineer
+  participant Azure as Azure Control Plane
+  participant Net as VNet/Resources
+  User->>Azure: az login / az account set
+  User->>Azure: Create/Update Virtual Network (VNet)
+  Azure-->>Net: Deploy artifacts
+  User->>Net: Validate connectivity
+  Net-->>User: Logs / Metrics (LA)
