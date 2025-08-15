@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "00 Prereqs",
+      "type": "shell",
+      "command": "bash infra/00_prereqs.sh"
+    },
+    {
+      "label": "02 Vault + Policy",
+      "type": "shell",
+      "command": "bash infra/02_vault_policy.sh"
+    }
+  ]
+}

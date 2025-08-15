@@ -1,0 +1,10 @@
+flowchart TB
+  subgraph Primary
+    APP[App VM]
+    CACHE[(ASR Cache)]
+  end
+  subgraph Recovery
+    RAPP[Recovery VM]
+    VAULT[(Recovery Services Vault)]
+  end
+  APP --> CACHE --> VAULT --> RAPP

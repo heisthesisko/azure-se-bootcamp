@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant Eng as Student
+  participant CLI as Azure CLI
+  participant Vault as RSV
+  participant VM as Source VM
+  participant DR as Recovery VM
+  Eng->>CLI: Create Policy/Mapping
+  CLI->>Vault: PUT Policy
+  Eng->>CLI: Enable Replication
+  Vault-->>VM: Install extension
+  Eng->>CLI: Failover
+  Vault-->>DR: Create from recovery point
