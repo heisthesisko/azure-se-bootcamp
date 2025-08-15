@@ -1,88 +1,68 @@
 # Module 05: Lifecycle Management Policies
-**Intent & Learning Objectives:** Automate data tiering and retention for healthcare compliance.
+**Intent & Learning Objectives:** Automate tiering and deletion to meet retention policies.
 
 **Top 2 problems this solves / features provided:**
-- Automated tiering
-- Automated deletion per policy
+- Reduce hot storage spend
+- Automate defensible deletion
 
 **Key Features Demonstrated:**
-- - Policy-driven tiering (Hot→Cool→Archive)
-- - Time-based deletion for data minimization
-- - Scoped to containers/prefixes
+- Policy JSON; per-prefix rules; hot→cool→archive→delete
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
-  end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module05_flow.mmd`
+  Hot["Hot Tier"] -->|30d| Cool["Cool Tier"] -->|180d| Archive["Archive Tier"] -->|365d| Delete["Delete"]
+  Policy["Management Policy (prefix: phi/)"] --> Hot
+  Policy --> Cool
+  Policy --> Archive
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Policy as Lifecycle Policy
+  participant Blob as Blobs
+  Policy->>Blob: Evaluate lastModified
+  Policy->>Blob: Tier to Cool/Archive
+  Policy->>Blob: Delete after 365d
 ```
-*See also:* `assets/diagrams/module05_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
-   bash infra/m05_lifecycle_policies.sh
+   bash infra/m05_lifecycle.sh
    ```
-3. **Validate outcome**
-   - Use the Azure CLI commands printed by the script to observe resources and settings.
+   - Review policy with `az storage account management-policy show`.
+   - Label datasets by prefix (e.g., `phi/claims/`).
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **Retention:** Map enterprise records schedule to policy.
+- **Audit:** Export policy JSON to evidence repo.
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m05_lifecycle_policies.sh`
-- Diagrams: `assets/diagrams/module05_flow.mmd`, `assets/diagrams/module05_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m05_lifecycle.sh`

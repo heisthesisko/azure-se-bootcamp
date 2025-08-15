@@ -1,88 +1,69 @@
 # Module 07: Geo-Redundant Storage (GRS)
-**Intent & Learning Objectives:** Replicates data across regions for DR.
+**Intent & Learning Objectives:** Enable cross-region durability and optional read access (RA-GRS).
 
 **Top 2 problems this solves / features provided:**
-- Durability across regions
-- Option for RA-GRS read access
+- Sustain regional outages
+- Optional read from secondary
 
 **Key Features Demonstrated:**
-- - Containers and blob types (Block/Page/Append)
-- - SAS for least-privilege uploads/downloads
-- - HTTPS/TLS 1.2+, encryption at rest (SSE)
+- Change SKU to RA-GRS; understand RPO/RTO tradeoffs
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
-flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
-  end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module07_flow.mmd`
+flowchart LR
+  Primary["Primary Region
+(Storage Account)"] -->|Async Replication| Secondary["Secondary Region"]
+  User --> Primary
+  Reader["Read-Only Clients"] -. RA-GRS .-> Secondary
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Client
+  participant Primary
+  participant Secondary
+  Client->>Primary: Read/Write
+  Primary-->>Secondary: Async replicate
+  Client->>Secondary: Read (RA-GRS)
 ```
-*See also:* `assets/diagrams/module07_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
    bash infra/m07_grs.sh
    ```
-3. **Validate outcome**
-   - Use the Azure CLI commands printed by the script to observe resources and settings.
+   - Query account properties to see secondary endpoints.
+   - Test read from `-secondary` endpoint (if enabled).
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **DR plan:** Document failover/CRR procedures.
+- **Data residency:** Align with policy.
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m07_grs.sh`
-- Diagrams: `assets/diagrams/module07_flow.mmd`, `assets/diagrams/module07_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m07_grs.sh`

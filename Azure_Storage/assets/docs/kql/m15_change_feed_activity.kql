@@ -1,0 +1,4 @@
+StorageBlobLogs
+| where OperationName in ("PutBlob","PutBlockList","AppendBlock","SetBlobTier","DeleteBlob")
+| project TimeGenerated, OperationName, Uri, AccountName, UserAgentHeader, Identity, CallerIpAddress=IPAddress
+| order by TimeGenerated desc

@@ -1,88 +1,73 @@
 # Module 02: Azure File Storage
-**Intent & Learning Objectives:** Managed SMB/NFS file shares for clinical apps and departmental shares.
+**Intent & Learning Objectives:** Provide SMB shares for clinical and payor operations (reports, batch ETL staging).
 
 **Top 2 problems this solves / features provided:**
-- Share EHR app files with SMB
-- Lift-and-shift file servers to Azure Files
+- SMB shares without managing file servers
+- Snapshots for user recovery
 
 **Key Features Demonstrated:**
-- - SMB 3.0 over TLS; Azure Files shares
-- - AD DS/AADDS integration options (out of scope to configure fully here)
-- - Snapshot and share-level backups
+- Azure Files SMB 3.0; snapshots; POSIX perms (via NFS if used)
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  Linux1["Linux Client
+(EHR app)"] -->|SMB 3.0| Share["Azure Files: ehr-files"]
+  AVD["Azure VM / AVD Session"] -->|SMB 3.0| Share
+  subgraph SA["Storage Account (Files)"]
+    Share
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module02_flow.mmd`
+  Snap["Share Snapshots"] -.-> Share
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Client as Linux Client
+  participant Files as Azure Files
+  Client->>Files: SMB Negotiate (TLS)
+  Client->>Files: Create/open file
+  Files-->>Client: 200 OK
+  Client->>Files: Snapshot request
+  Files-->>Client: Snapshot created
 ```
-*See also:* `assets/diagrams/module02_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
-   bash infra/m02_files_basics.sh
+   bash infra/m02_files.sh
    ```
-3. **Validate outcome**
-   - Mount the Azure File share via SMB on Linux: `sudo mount -t cifs //ACCOUNT.file.core.windows.net/ehr-files /mnt/ehr -o vers=3.0,username=AZURE\\ACCOUNT,password=KEY,dir_mode=0770,file_mode=0770,serverino`
+   - Mount from Linux using CIFS; store mock batch reports.
+   - Create a snapshot and restore a file version.
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **Minimum necessary:** Separate PHI vs non-PHI shares.
+- **Encryption:** SMB over TLS; disable SMB1.
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m02_files_basics.sh`
-- Diagrams: `assets/diagrams/module02_flow.mmd`, `assets/diagrams/module02_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m02_files.sh`

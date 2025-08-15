@@ -1,8 +1,8 @@
 sequenceDiagram
   participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant PHP as PHP Uploader
+  participant SA as Storage (Blob)
+  User->>PHP: Select file
+  PHP->>SA: PUT blob with SAS
+  SA-->>PHP: 201 Created
+  PHP-->>User: Upload success URL

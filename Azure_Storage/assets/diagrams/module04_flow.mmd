@@ -1,15 +1,9 @@
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  subgraph Accounts
+    GPv2["GPv2 (Standard_LRS)"]
+    BBS["Premium BlockBlobStorage"]
+    FS["Premium FileStorage"]
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
+  WorkloadA["Clinical Docs"] --> GPv2
+  WorkloadB["Imaging Objects"] --> BBS
+  WorkloadC["SMB Dept Shares"] --> FS

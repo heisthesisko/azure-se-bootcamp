@@ -1,3 +1,3 @@
-# Lab Notes
+# Lab Notes (Revised)
 
-Record observations, issues, and screenshots here.
+Capture observations, KQL queries, and screenshots per module.

@@ -1,88 +1,70 @@
 # Module 04: Storage Account Types (Standard/Premium)
-**Intent & Learning Objectives:** Choose performance and cost options for healthcare data.
+**Intent & Learning Objectives:** Select the right account for workload SLAs and budget.
 
 **Top 2 problems this solves / features provided:**
-- Right-size performance
-- Control cost for archival data
+- Right-size latency/throughput
+- Match feature sets to needs
 
 **Key Features Demonstrated:**
-- - Containers and blob types (Block/Page/Append)
-- - SAS for least-privilege uploads/downloads
-- - HTTPS/TLS 1.2+, encryption at rest (SSE)
+- GPv2 vs Premium BlockBlobStorage vs FileStorage
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  subgraph Accounts
+    GPv2["GPv2 (Standard_LRS)"]
+    BBS["Premium BlockBlobStorage"]
+    FS["Premium FileStorage"]
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module04_flow.mmd`
+  WorkloadA["Clinical Docs"] --> GPv2
+  WorkloadB["Imaging Objects"] --> BBS
+  WorkloadC["SMB Dept Shares"] --> FS
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Admin
+  Admin->>Azure: Create GPv2 + Premium accounts
+  Admin->>Azure: Run throughput tests (AzCopy)
+  Azure-->>Admin: Metrics for comparison
 ```
-*See also:* `assets/diagrams/module04_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
-   bash infra/m04_account_types.sh
+   bash infra/m04_types.sh
    ```
-3. **Validate outcome**
-   - Use the Azure CLI commands printed by the script to observe resources and settings.
+   - Use AzCopy to measure throughput; compare metrics in Portal/CLI.
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **Cost control:** Use Hot/Cool/Archive per dataset.
+- **SLA:** Premium accounts for predictable latency.
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m04_account_types.sh`
-- Diagrams: `assets/diagrams/module04_flow.mmd`, `assets/diagrams/module04_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m04_types.sh`

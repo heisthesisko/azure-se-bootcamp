@@ -4,15 +4,13 @@ CREATE TABLE IF NOT EXISTS patients (
   dob DATE NOT NULL,
   diagnosis TEXT
 );
-
 CREATE TABLE IF NOT EXISTS claims (
   claim_id SERIAL PRIMARY KEY,
   patient_id INT NOT NULL REFERENCES patients(patient_id),
   claim_date DATE NOT NULL,
   amount NUMERIC(12,2) NOT NULL,
-  status TEXT CHECK (status IN ('Submitted','Adjudicated','Paid','Denied')) NOT NULL DEFAULT 'Submitted'
+  status TEXT NOT NULL CHECK (status IN ('Submitted','Adjudicated','Paid','Denied'))
 );
-
 CREATE TABLE IF NOT EXISTS imaging_metadata (
   image_id SERIAL PRIMARY KEY,
   patient_id INT NOT NULL REFERENCES patients(patient_id),

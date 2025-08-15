@@ -1,15 +1,7 @@
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  subgraph OnPremLinux["On-Prem Linux"]
+    NFS["NFS Share /data"]
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
+  AzCopy["AzCopy/Rsync Job"] --> Files["Azure Files: ehr-sync"]
+  NFS --> AzCopy
+  Note["Azure File Sync requires Windows Server agent – using Linux-friendly alternative for lab"]

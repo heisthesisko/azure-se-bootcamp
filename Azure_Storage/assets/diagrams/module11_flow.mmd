@@ -1,15 +1,3 @@
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
-  end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
+  VM["Linux VM with UAMI"] -->|IMDS Token| Entra["Entra ID"]
+  Entra -->|Access Token| VM -->|Blob REST| SA["Storage Account"]

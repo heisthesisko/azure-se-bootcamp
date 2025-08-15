@@ -1,0 +1,5 @@
+StorageBlobLogs
+| where OperationName in ("DeleteBlob","DeleteContainer")
+| summarize Deletes=count() by bin(TimeGenerated, 5m)
+| where Deletes > 10
+| order by TimeGenerated desc

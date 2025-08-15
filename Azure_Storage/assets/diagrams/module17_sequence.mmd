@@ -1,8 +1,6 @@
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant NFS as On-Prem NFS
+  participant Job as AzCopy/Rsync
+  participant Files as Azure Files
+  NFS->>Job: Read changes
+  Job->>Files: Sync to cloud share

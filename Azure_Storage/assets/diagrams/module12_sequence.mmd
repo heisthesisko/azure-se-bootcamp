@@ -1,8 +1,8 @@
 sequenceDiagram
+  participant Admin
+  participant Entra
   participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant SA as Storage
+  Admin->>Entra: Assign role at scope
+  User->>Entra: az login
+  User->>SA: az storage blob list --auth-mode login

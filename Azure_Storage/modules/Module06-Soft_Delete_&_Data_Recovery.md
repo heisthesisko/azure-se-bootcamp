@@ -1,88 +1,68 @@
 # Module 06: Soft Delete & Data Recovery
-**Intent & Learning Objectives:** Protect data from accidental deletion.
+**Intent & Learning Objectives:** Protect against accidental deletions and support PITR for training datasets.
 
 **Top 2 problems this solves / features provided:**
-- Undelete blobs/containers
-- Restore from accidental deletion
+- Recover accidentally deleted blobs
+- Short-term rollback safety
 
 **Key Features Demonstrated:**
-- - Containers and blob types (Block/Page/Append)
-- - SAS for least-privilege uploads/downloads
-- - HTTPS/TLS 1.2+, encryption at rest (SSE)
+- Blob soft delete; container soft delete; point-in-time restore
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
-  end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module06_flow.mmd`
+  Blob["Blob: patients.csv"] --> Del["Delete"]
+  Del --> SDR["Soft Delete Retention (7d)"]
+  SDR --> Restore["Undelete / Restore"]
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
   participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Service as Blob Service
+  User->>Service: Delete patients.csv
+  Service-->>User: 202 Accepted (soft-deleted)
+  User->>Service: Undelete within 7d
+  Service-->>User: Blob restored
 ```
-*See also:* `assets/diagrams/module06_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
-   bash infra/m06_soft_delete.sh
+   bash infra/m06_softdelete.sh
    ```
-3. **Validate outcome**
-   - Use the Azure CLI commands printed by the script to observe resources and settings.
+   - Delete a test blob; undelete it within retention.
+   - List deleted versions to confirm.
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **Least privilege:** Keep delete rights restricted.
+- **Retention:** Align 7–90 days with policy.
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m06_soft_delete.sh`
-- Diagrams: `assets/diagrams/module06_flow.mmd`, `assets/diagrams/module06_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m06_softdelete.sh`

@@ -1,8 +1,8 @@
 sequenceDiagram
-  participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant Client as Linux Client
+  participant Files as Azure Files
+  Client->>Files: SMB Negotiate (TLS)
+  Client->>Files: Create/open file
+  Files-->>Client: 200 OK
+  Client->>Files: Snapshot request
+  Files-->>Client: Snapshot created

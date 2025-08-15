@@ -1,0 +1,5 @@
+StorageBlobLogs
+| where not(IsPrivateLink) and (IPAddress !startswith "10." and IPAddress !startswith "172." and IPAddress !startswith "192.168.")
+| summarize Count=count() by IPAddress, bin(TimeGenerated, 15m)
+| where Count > 0
+| top 50 by Count desc

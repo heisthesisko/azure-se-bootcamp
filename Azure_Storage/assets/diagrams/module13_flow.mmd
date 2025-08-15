@@ -1,15 +1,4 @@
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
-  end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
+  Ingest["Ingestion Job"] -->|Append/Block Put| Container["Container: compliance (WORM)"]
+  Policy["Immutability Policy (30d)"] --> Container
+  User -. blocked delete .-x Container

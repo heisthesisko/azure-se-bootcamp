@@ -1,89 +1,71 @@
 # Module 01: Azure Blob Storage
-**Intent & Learning Objectives:** Scalable object storage for healthcare files, images, and documents.
+**Intent & Learning Objectives:** Store and retrieve unstructured ePHI (clinical docs, HL7/FHIR attachments) with secure SAS patterns.
 
 **Top 2 problems this solves / features provided:**
-- Secure ePHI object storage at scale
-- Simple HTTP(S) access with SAS for mobile/edge collectors
+- Elastic ePHI object store
+- Controlled client uploads via SAS
 
 **Key Features Demonstrated:**
-- - Containers and blob types (Block/Page/Append)
-- - SAS for least-privilege uploads/downloads
-- - HTTPS/TLS 1.2+, encryption at rest (SSE)
+- Containers, blob types; SAS; SSE/TLS
 
-**Architecture Diagram**
+**Architecture Diagram (module-specific)**
 ```mermaid
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  UserApp["PHP Web (Uploader)"] -->|SAS PUT| BlobC["Blob Container: phi"]
+  subgraph StorageAccount["Storage Account (GPv2)"]
+    BlobC
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
-```
-*See also:* `assets/diagrams/module01_flow.mmd`
+  Note["TLS 1.2+, SSE at rest"]
 
-**Sequence Overview**
+```
+
+**Sequence Diagram (module-specific)**
 ```mermaid
 sequenceDiagram
   participant User
-  participant Web as PHP Web
-  participant SA as Azure Storage
-  User->>Web: Upload file
-  Web->>SA: PUT blob via SAS
-  SA-->>Web: 201 Created
-  Web-->>User: URL + checksum
+  participant PHP as PHP Uploader
+  participant SA as Storage (Blob)
+  User->>PHP: Select file
+  PHP->>SA: PUT blob with SAS
+  SA-->>PHP: 201 Created
+  PHP-->>User: Upload success URL
 ```
-*See also:* `assets/diagrams/module01_sequence.mmd`
 
-## Step-by-Step Instructions
+## Step-by-Step Instructions (from zero)
 > [!IMPORTANT]
-> Use only generated mock data. Treat all artifacts as ePHI for discipline.
-> [!TIP]
-> Open a VS Code terminal. All scripts are idempotent where possible.
-
-1. **Prepare environment**
+> Use **mock/test data** only. Treat all artifacts as ePHI for discipline.
+1. **Environment prep**
    ```bash
    cp config/env.sample config/.env
-   code config/.env  # set RG_NAME, LOCATION, etc.
+   code config/.env
    bash infra/00_prereqs.sh
    ```
-2. **Run the module script**
+2. **Deploy & configure**
    ```bash
-   bash infra/m01_blob_basics.sh
+   bash infra/m01_blob.sh
    ```
-3. **Validate outcome**
-   - Use `az storage blob list` to see uploaded `patients.csv`.
-   - Browse the PHP demo in your Apache VM and attempt an upload using the SAS.
+   - Export the SAS as env vars and run the PHP uploader in `app/web`.
+   - List blobs with `az storage blob list` to verify.
 
 ## Compliance Notes
-> [!IMPORTANT]
-> **HIPAA/HITRUST:** Enforce least-privilege. Log access (Module 14), keep audit trails (Module 15), and restrict network exposure (Module 9).
+- **HIPAA:** Use short-lived SAS and minimum privileges.
+- **HITRUST:** Log reads/writes (Module 14).
 
 ## Pros, Cons & Warnings
 **Pros**
-- Elastic scale and durability for clinical content.
-- Native encryption at rest and TLS in transit.
-- Broad ecosystem integration (SDK/CLI/REST).
+- Built-in security controls (TLS, SSE, RBAC).
+- Azure-native automation and scalability.
+- Scriptable with Azure CLI for repeatability/audits.
 
 **Cons**
-- Misconfigured public access can expose data—prefer Private Endpoints.
-- SAS mismanagement (over-broad scope/long expiry) increases risk.
-- Some enterprise features require additional Azure services (cost).
+- Misconfiguration of SAS, public network access, or RBAC can expose data.
+- Some features (e.g., RA-GRS, Premium SKUs) have cost trade-offs.
+- Lifecycle policy evaluation is periodic, not immediate.
 
 > [!CAUTION]
-> Test in non-production subscriptions. Some modules (GRS, Premium) incur higher costs.
+> Validate access via Entra ID tokens (Modules 11–12) and restrict public access (Module 9).
 > [!TIP]
-> Use tags (e.g., `env=training`, `app=hcws`) for cost reporting and governance.
+> Tag resources (e.g., `env=training`, `data=ephi`) to drive cost/compliance reports.
 
 ## Files & Scripts
-- Module script: `infra/m01_blob_basics.sh`
-- Diagrams: `assets/diagrams/module01_flow.mmd`, `assets/diagrams/module01_sequence.mmd`
-- App demo: `app/web/index.php` (SAS uploader), `app/ai/cse_upload.py` (client-side encryption demo)
+- Script: `infra/m01_blob.sh`

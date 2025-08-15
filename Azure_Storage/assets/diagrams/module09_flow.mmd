@@ -1,15 +1,8 @@
 flowchart TB
-  subgraph Azure ["Azure Subscription"]
-    RG["Resource Group"]
-    SA["Storage Account"]
+  subgraph VNet
+    Subnet["Subnet: snet-app"]
+    PE["Private Endpoint (blob)"]
   end
-  subgraph OnPrem ["On-Prem (Hyper-V)"]
-    VyOS["VyOS VPN"]
-    Web["Apache/PHP"]
-    DB["PostgreSQL"]
-    AI["AI Server (Python)"]
-  end
-  VyOS --- RG
-  Web --> SA
-  AI --> SA
-  DB --> SA
+  AppVM["App VM"] -->|HTTPS| PE --> SA["Storage Account"]
+  X["Internet"] -.-x SA
+  DNS["Private DNS Zone"] --> PE
