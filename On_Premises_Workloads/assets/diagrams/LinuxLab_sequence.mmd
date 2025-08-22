@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant U as User
+  participant PS as PowerShell Script
+  participant HV as Hyper-V
+  participant VM as Virtual Machines
+
+  U->>PS: Run Script as Admin
+  PS->>PS: Verify Directories & Logs
+  PS->>HV: Check Hyper-V Installed
+  HV-->>PS: Installed/Not Installed
+  PS->>PS: Start BITS Transfer (ISO)
+  PS->>VM: Create VM with ISO
+  VM-->>U: Running Linux VM

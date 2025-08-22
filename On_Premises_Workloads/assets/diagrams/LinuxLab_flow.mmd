@@ -1,0 +1,21 @@
+flowchart TD
+    A["Start Script"] --> B{"Admin Privileges?"}
+    B -- No --> Z["Exit: Run as Administrator"]
+    B -- Yes --> C["Check/Create C:\\LinuxLab"]
+    C --> D["Create Log File & VM Folder"]
+    D --> E{"Hyper-V Installed?"}
+    E -- No --> F["Install Hyper-V & Log"]
+    E -- Yes --> G["Proceed to ISO Downloads"]
+
+    G --> H["For Each ISO"]
+    H --> I["Start BITS Job"]
+    I --> J{"Download Success?"}
+    J -- No --> K["Retry up to 3 Times"]
+    J -- Yes --> L["Validate ISO File"]
+
+    L --> M["Create VM with ISO"]
+    M --> N["Start VM"]
+    N --> H
+
+    H -->|All ISOs Processed| O["Write Completion Log"]
+    O --> P["End Script"]
