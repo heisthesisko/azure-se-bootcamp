@@ -1,4 +1,4 @@
-# Module 01: RHEL 10 Triple‑VM Lab Builder (PowerShell & Hyper‑V)
+# Module 02: RHEL 10 Triple‑VM Lab Builder (PowerShell & Hyper‑V)
 
 **Intent & Learning Objectives:**  
 This module explains **automated creation of three Red Hat Enterprise Linux 10 (RHEL 10) virtual machines on Windows using PowerShell and Hyper‑V.**  
