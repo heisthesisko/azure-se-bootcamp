@@ -1,4 +1,4 @@
-# Module: Linux Lab Builder with PowerShell & Hyper-V
+# Module 01: Linux Lab Builder with PowerShell & Hyper-V
 
 **Intent & Learning Objectives:**  
 This module explains **automated creation of a Linux Lab environment on Windows using PowerShell and Hyper-V.**  
