@@ -1,0 +1,22 @@
+sequenceDiagram
+  participant U as User
+  participant Br as Web Browser
+  participant RH as Red Hat Portal
+  participant PS as PowerShell Script
+  participant HV as Hyper‑V
+  participant VM1 as VM #1
+  participant VM2 as VM #2
+  participant VM3 as VM #3
+
+  U->>Br: Visit developers.redhat.com
+  Br->>RH: Create/Sign‑in Developer Account
+  RH-->>Br: Access granted
+  U->>Br: Download RHEL 10 ISO
+  Br-->>U: ISO saved locally
+
+  U->>PS: Run RHEL10LabBuilder.ps1 -VmCount 3 ...
+  PS->>HV: Check/Enable Hyper‑V & vSwitch
+  PS->>HV: Create Gen2 VM (x3), attach ISO, set Secure Boot
+  HV-->>PS: VMs created
+  PS->>HV: Start VM1/VM2/VM3
+  HV-->>U: VMs running (console available)
