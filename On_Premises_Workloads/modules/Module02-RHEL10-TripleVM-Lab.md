@@ -98,62 +98,9 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 ### 2) Download the RHEL 10 ISO Locally
 1. From your Red Hat account, navigate to **Product Downloads → Red Hat Enterprise Linux → Version 10**.  
 2. Choose the **Binary DVD ISO** (full install) for **x86_64**.  
-3. Download the ISO to **`C:\RHEL10Lab\isos\`** (create the folder if it doesn’t exist).  
-4. Copy the published **SHA256** value shown on the download page.
+3. Download the ISO to **`C:\LinuxLab`** (create the folder if it doesn’t exist).  
 
-Create recommended folders:
-```powershell
-$LabRoot = "C:\RHEL10Lab"
-$IsoDir  = "$LabRoot\isos"
-$VmRoot  = "$LabRoot\VMs"
-$VhdDir  = "$LabRoot\disks"
-$LogDir  = "$LabRoot\logs"
-New-Item -ItemType Directory -Force -Path $IsoDir, $VmRoot, $VhdDir, $LogDir | Out-Null
-```
-
-### 3) Verify the ISO Checksum
-Replace the path and expected hash with your values:
-```powershell
-$IsoPath = "C:\RHEL10Lab\isos\rhel-10.x86_64-dvd.iso"   # example filename
-$ExpectedSha = "<paste SHA256 from Red Hat>"
-(Get-FileHash -Algorithm SHA256 $IsoPath).Hash -eq $ExpectedSha
-```
-If the command returns **True**, the file is intact.
-
-### 4) Run the Supplied PowerShell Script
-You have been provided **`RHEL10LabBuilder.ps1`**. Place it in `C:\RHEL10Lab\` and unblock it:
-```powershell
-Unblock-File "C:\RHEL10Lab\RHEL10LabBuilder.ps1"
-```
-
-Most lab scripts of this type accept common parameters like:
-- `-VmCount 3` — number of VMs to create.  
-- `-VmNamePrefix "RHEL10"` — VM name prefix (RHEL10-01, RHEL10-02, RHEL10-03).  
-- `-IsoPath "C:\RHEL10Lab\isos\rhel-10.x86_64-dvd.iso"` — path to ISO.  
-- `-SwitchName "Default Switch"` — Hyper‑V virtual switch to attach.  
-- `-CpuCount 2` — vCPUs per VM.  
-- `-MemoryStartupBytes 4GB` — RAM per VM.  
-- `-VHDSizeGB 64` — VHDX size per VM.  
-- `-SecureBootTemplate "MicrosoftUEFICertificateAuthority"` — Secure Boot for Linux.  
-- `-LogPath "C:\RHEL10Lab\logs\RHEL10LabBuilder.txt"` — log file.
-
-> Adjust for your script if parameter names differ.
-
-**Example run:**
-```powershell
-cd C:\RHEL10Lab
-.\RHEL10LabBuilder.ps1 `
-  -VmCount 3 `
-  -VmNamePrefix "RHEL10" `
-  -IsoPath "C:\RHEL10Lab\isos\rhel-10.x86_64-dvd.iso" `
-  -SwitchName "Default Switch" `
-  -CpuCount 2 `
-  -MemoryStartupBytes 4GB `
-  -VHDSizeGB 64 `
-  -SecureBootTemplate "MicrosoftUEFICertificateAuthority" `
-  -LogPath "C:\RHEL10Lab\logs\RHEL10LabBuilder.txt" `
-  -Verbose
-```
+### 3) Run the Supplied PowerShell Script **`RHEL10LabBuilder.ps1`**.
 
 **Verify VMs:**
 ```powershell
