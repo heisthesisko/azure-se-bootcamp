@@ -100,7 +100,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 2. Choose the **Binary DVD ISO** (full install) for **x86_64**.  
 3. Download the ISO to **`C:\LinuxLab`** (create the folder if it doesn’t exist).  
 
-### 3) Run the Supplied PowerShell Script **`RHEL10LabBuilder.ps1`**.
+### 3) Run the Supplied PowerShell Script **`Mod02_RHEL10LabBuilder.ps1`**.
 
 **Verify VMs:**
 ```powershell
