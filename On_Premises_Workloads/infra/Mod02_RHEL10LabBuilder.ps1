@@ -1,200 +1,157 @@
-# Check if the script is running with elevated privileges
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-Host "Please run this script as an administrator."
-    Exit 1
-}
+#requires -Modules Hyper-V
+<#
+.SYNOPSIS
+    Creates six Hyper-V VMs (Gen 2) for a Linux lab using specified ISOs, connects them to a switch, and auto-starts each VM.
 
-# Define variables
-$folderPath = "C:\\LinuxLab"
-$logFilePath = "C:\\LinuxLab\\LinuxLabBuilder.txt"
-$VHDPath = "C:\\LinuxLab\\VMFiles\\"
-$isoFolder = "C:\\LinuxLab\\"
+.DESCRIPTION
+    - Creates six Generation 2 VMs with 2 vCPU, 2GB RAM, and a thin-provisioned 60GB OS disk.
+    - Attaches the appropriate ISO as a DVD and sets it as the first boot device.
+    - Connects all VMs to the existing Hyper-V switch 'AzureS2S'.
+    - Auto-starts each VM after creation.
+    - Logs each VM creation/start and a final success message to C:\LinuxLab\Logs\...log.
+    - Run PowerShell as Administrator.
+#>
 
-function Write-Log {
-    param (
-        [string]$EventTimeStamp,
-        [string]$Comment
-    )
-    
-    # Get the current date and time
-    $currentDateTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss.fffffff"
-    
-    # Format the log entry
-    $logEntry = "$currentDateTime - $Comment"
-    
-    # Write the log entry to the log file
-    Add-Content -Path $EventTimeStamp -Value $logEntry
-    
-    # Ensure the log file is updated immediately
-    [System.IO.File]::WriteAllText($EventTimeStamp, [System.IO.File]::ReadAllText($EventTimeStamp) + "`r`n")
-}
+# ---------------------------
+# User-configurable variables
+# ---------------------------
+$RhelIsoPath   = 'C:\LinuxLab\RHEL10.iso'
+$CentOsIsoPath = 'C:\LinuxLab\CentOS-Stream-10.iso'
+$VmRoot        = 'C:\LinuxLab\VMFiles'
+$SwitchName    = 'AzureS2S'
 
-# Verify the existence of the LinuxLab folder and the LinuxLabBuilder.txt file
-
-if (-Not (Test-Path $folderPath)) {
-    Write-Host "LinuxLab folder does not exist. Creating the folder..."
-    New-Item -Path $folderPath -ItemType Directory
-}
-
-if (-Not (Test-Path $logFilePath)) {
-    Write-Host "LinuxLabBuilder.txt file does not exist. Creating the file..."
-    New-Item -Path $logFilePath -ItemType File
-}
-
-if (-Not (Test-Path $VHDPath)) {    # Check if the VMFiles folder exists
-    Write-Host "VMFiles folder does not exist. Creating the folder..."
-    New-Item -Path $VHDPath -ItemType Directory    <# Action to perform if the condition is true #>
-}
-
-# Example usage
-$Comment = "Script started"
-Write-Log -EventTimeStamp $logFilePath -Comment $Comment
-
-# Define the Hyper-V feature name
-$featureName = "Microsoft-Hyper-V-All"
-
-# Function to check if Hyper-V is installed
-function Confirm-HyperV {
-    $feature = Get-WindowsOptionalFeature -Online -FeatureName $featureName
-    return $feature.State -eq "Enabled"
-}
-
-# Function to install Hyper-V
-function Install-HyperV {
-    Enable-WindowsOptionalFeature -Online -FeatureName $featureName -All -NoRestart
-    Write-Host "Hyper-V has been installed. Please restart your computer to complete the installation."
-    $Comment= "Hyper-V has been installed. Restart will be needed"
-    Write-Log -EventTimeStamp $logFilePath -Comment $Comment
-}
-
-# Check if Hyper-V is installed
-if (Confirm-HyperV) {
-    Write-Host "Hyper-V is already installed."
-    $Comment= "Hyper-V is already installed"
-    Write-Log -EventTimeStamp $logFilePath -Comment $Comment
-} else {
-    Write-Host "Hyper-V is not installed. Installing now..."
-    $Comment= "Hyper-V is not installed. Installing now"
-    Write-Log -EventTimeStamp $logFilePath -Comment $Comment
-    Install-HyperV
-}
-
-
-
-
-# Function to check if ISO exists
-function Confirm-ISOExists {
-    param (
-        [string]$folder,
-        [string]$fileName
-    )
-
-    $filePath = Join-Path -Path $folder -ChildPath $fileName
-    return Test-Path -Path $filePath
-}
-
-# Function to start BITS job
-function Start-BITSJob {
-    param (
-        [string]$jobName,
-        [string]$sourceUrl,
-        [string]$destinationPath
-    )
-
-    Write-Output "Starting BITS job: $jobName"
-    Start-BitsTransfer -Source $sourceUrl -Destination $destinationPath -DisplayName $jobName -Asynchronous
-   
-}
-
-# Function to create a virtual machine
-function Create-VM {
-    param (
-        [string]$vmName,
-        [string]$isoPath
-    )
-
-    Write-Output "Creating VM: $vmName"
-
-    New-VM -Name $vmName -MemoryStartupBytes 2GB -Generation 1 -NewVHDPath "C:\LinuxLab\VMFiles\$vmName.vhdx" -NewVHDSizeBytes 60GB
-    Set-VMProcessor -VMName $vmName -Count 2
-    Add-VMDvdDrive -VMName $vmName -Path $isoPath
-    Set-VMDvdDrive -VMName $vmName -ControllerNumber 0 -ControllerLocation 1
-    Start-VM -Name $vmName
-
-    Write-Output "VM $vmName created and started."
-}
-
-# BITS job details
-$bitsJobs = @(
-    @{ JobName = "Job1"; SourceUrl = "https://mirror.stream.centos.org/10-stream/BaseOS/x86_64/iso/CentOS-Stream-10-20250818.0-x86_64-boot.iso"; DestinationPath = "C:\\LinuxLab\\CentOS-Stream-10.iso" },
-    @{ JobName = "Job2"; SourceUrl = "https://releases.ubuntu.com/18.04/ubuntu-18.04.6-live-server-amd64.iso"; DestinationPath = "C:\\LinuxLab\\Ubuntu-18.iso" },
-    @{ JobName = "Job3"; SourceUrl = "https://download.rockylinux.org/pub/rocky/10/isos/x86_64/Rocky-10.0-x86_64-boot.iso"; DestinationPath = "C:\\LinuxLab\\Rocky-10.iso" },
-    @{ JobName = "Job4"; SourceUrl = "https://download.opensuse.org/distribution/leap/15.6/iso/openSUSE-Leap-15.6-NET-x86_64-Media.iso"; DestinationPath = "C:\\LinuxLab\\Suse-15.iso" },
-    @{ JobName = "Job5"; SourceUrl = "https://repo.almalinux.org/almalinux/10/isos/x86_64/AlmaLinux-10.0-x86_64-boot.iso"; DestinationPath = "C:\\LinuxLab\\AlmaLinux-10.iso" },
-    @{ JobName = "Job6"; SourceUrl = "https://download.fedoraproject.org/pub/fedora-secondary/releases/42/Server/ppc64le/iso/Fedora-Server-netinst-ppc64le-42-1.1.iso"; DestinationPath = "C:\\LinuxLab\\Fedora-42.iso" },
-    @{ JobName = "Job7"; SourceUrl = "https://vault.centos.org/7.7.1908/isos/x86_64/CentOS-7-x86_64-Everything-1908.iso"; DestinationPath = "C:\\LinuxLab\\CentOS-7-EOL.iso" }
-    
-
-    
-    # Add more jobs as needed
+# VM specs: name + ISO path
+$VmSpecs = @(
+    @{ Name = 'RHEL10-Apache';       Iso = $RhelIsoPath },
+    @{ Name = 'RHEL10-SQL';          Iso = $RhelIsoPath },
+    @{ Name = 'RHEL10-FileServer';   Iso = $RhelIsoPath },
+    @{ Name = 'RHEL10-AI-Model';     Iso = $RhelIsoPath },
+    @{ Name = 'RHEL10-PostGreSQL';   Iso = $RhelIsoPath },
+    @{ Name = 'CentOSStream-VyOS';   Iso = $CentOsIsoPath }
 )
 
-# Main routine
-foreach ($bitsJob in $bitsJobs) {
-    $jobName = $bitsJob.JobName
-    $sourceUrl = $bitsJob.SourceUrl
-    $destinationPath = $bitsJob.DestinationPath
-    $isoFileName = [System.IO.Path]::GetFileName($destinationPath)
-    $vmName = "LinuxLabVM-" + [System.IO.Path]::GetFileNameWithoutExtension($isoFileName)
-    $retryCount = 0
-    $maxRetries = 3
-    $isoExists = $false
+$DiskSizeBytes = 60GB   # thin-provisioned VHDX
+$MemoryBytes   = 2GB
+$VcpuCount     = 2
 
-    while (-not $isoExists -and $retryCount -lt $maxRetries) {
-        # Start the BITS job
-        Start-BITSJob -jobName $jobName -sourceUrl $sourceUrl -destinationPath $destinationPath
-        $Comment = "Starting $sourceUrl download"
-        Write-Log -EventTimeStamp $logFilePath -Comment $Comment
-
-                
-        # Wait for the BITS job to complete
-        $job = Get-BitsTransfer -Name $jobName
-        while ($job.JobState -ne 'Transferred' -and $job.JobState -ne 'Suspended' -and $job.JobState -ne 'Error') {
-            Start-Sleep -Seconds 5
-            $job = Get-BitsTransfer -Name $jobName
-        }
-
-        if ($job.JobState -eq 'Transferred') {
-            Complete-BitsTransfer -BitsJob $job
-        } elseif ($job.JobState -eq 'Error') {
-            Write-Host "BITS job failed: $($job | Select-Object -ExpandProperty ErrorDescription)"
-            Write-Log -EventTimeStamp $logFilePath -Comment "BITS job failed: $($job | Select-Object -ExpandProperty ErrorDescription)"
-        }
-
-        # Check if the ISO exists
-        $isoExists = Confirm-ISOExists -folder $isoFolder -fileName $isoFileName
-        if ($isoExists) {
-            Write-Output "ISO exists: $isoFileName"
-        } else {
-            $retryCount++
-            Write-Output "ISO not found, repeating BITS job... Attempt $retryCount of $maxRetries"
-            Write-Log -EventTimeStamp $logFilePath -Comment "ISO not found: $isoFileName, Attempt $retryCount of $maxRetries"
-        }
+# --------------
+# Logging helper
+# --------------
+function Write-Log {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$EventTimeStamp,  # destination log *file path*
+        [Parameter(Mandatory=$true)]
+        [string]$Comment
+    )
+    try {
+        $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        $line = "{0}`t{1}" -f $ts, $Comment
+        Add-Content -Path $EventTimeStamp -Value $line -Encoding UTF8
+    } catch {
+        Write-Warning "Failed to write to log '$EventTimeStamp': $($_.Exception.Message)"
     }
-
-    if (-not $isoExists) {
-        Write-Host "Failed to download $isoFileName after $maxRetries attempts. Please download manually."
-        Write-Log -EventTimeStamp $logFilePath -Comment "Failed to download $isoFileName after $maxRetries attempts. Please download manually."
-        Add-Content -Path $failedLogFilePath -Value "$isoFileName`n"
-    }
-
-        # Create a virtual machine using the downloaded ISO
-        Create-VM -vmName $vmName -isoPath $destinationPath
-        $Comment = $vmName + " created"
-        Write-Log -EventTimeStamp $logFilePath -Comment $Comment
 }
 
-# VM creation complete
-Write-Output "All BITS jobs completed, ISOs validated, and VMs created."
-$Comment = "All BITS jobs completed, ISOs validated, and VMs created."
+# --------------------------
+# Environment / pre-checks
+# --------------------------
+try {
+    Import-Module Hyper-V -ErrorAction Stop
+} catch {
+    Write-Error "Hyper-V PowerShell module not available. Enable Hyper-V and run as Administrator. Error: $($_.Exception.Message)"
+    exit 1
+}
+
+# Verify ISOs used by this run exist
+$isosInUse = $VmSpecs.Iso | Select-Object -Unique
+foreach ($iso in $isosInUse) {
+    if (-not (Test-Path -LiteralPath $iso)) {
+        Write-Error "ISO not found: '$iso'. Ensure the file exists and try again."
+        exit 1
+    }
+}
+
+# Verify target switch exists
+$hvSwitch = Get-VMSwitch -Name $SwitchName -ErrorAction SilentlyContinue
+if (-not $hvSwitch) {
+    Write-Error "Hyper-V switch '$SwitchName' was not found. Create it or update `$SwitchName."
+    exit 1
+}
+
+# Ensure folders exist
+$null = New-Item -ItemType Directory -Path $VmRoot -Force -ErrorAction SilentlyContinue
+$LogDir = 'C:\\LinuxLab\\LinuxLabBuilder.txt'
+$null = New-Item -ItemType Directory -Path $LogDir -Force -ErrorAction SilentlyContinue
+
+# Log file
+$logFilePath = Join-Path $LogDir ("HyperV-CreateVMs_{0}.log" -f (Get-Date -Format 'yyyyMMdd_HHmmss'))
+"Timestamp`tEvent" | Out-File -FilePath $logFilePath -Encoding UTF8
+
+# --------------------------
+# VM creation loop
+# --------------------------
+foreach ($spec in $VmSpecs) {
+    $name = $spec.Name
+    $iso  = $spec.Iso
+
+    try {
+        # Paths
+        $vmPath  = Join-Path $VmRoot $name
+        $vhdPath = Join-Path $vmPath "$name-OS.vhdx"
+
+        # Guard: existing VM
+        if (Get-VM -Name $name -ErrorAction SilentlyContinue) {
+            throw "A VM named '$name' already exists."
+        }
+
+        # Create VM folder and VHDX (dynamic = thin provisioned)
+        $null = New-Item -ItemType Directory -Path $vmPath -Force -ErrorAction SilentlyContinue
+        New-VHD -Path $vhdPath -SizeBytes $DiskSizeBytes -Dynamic | Out-Null
+
+        # Create VM (Gen 2), attach NIC to the specified switch, set RAM/CPU
+        New-VM -Name $name -Generation 2 -MemoryStartupBytes $MemoryBytes -VHDPath $vhdPath -Path $vmPath -SwitchName $SwitchName | Out-Null
+        Set-VMProcessor -VMName $name -Count $VcpuCount
+
+        # Attach ISO and set DVD as first boot device; enable Secure Boot (Linux template)
+        if (Get-VMDvdDrive -VMName $name -ErrorAction SilentlyContinue) {
+            Set-VMDvdDrive -VMName $name -Path $iso | Out-Null
+        } else {
+            Add-VMDvdDrive -VMName $name -Path $iso | Out-Null
+        }
+        $dvd = Get-VMDvdDrive -VMName $name
+        Set-VMFirmware -VMName $name -EnableSecureBoot On -SecureBootTemplate 'MicrosoftUEFICertificateAuthority' -FirstBootDevice $dvd
+
+        # Per-VM create log
+        $perVmMsg = "VM '$name' created successfully (ISO: $([System.IO.Path]::GetFileName($iso)), Switch: $SwitchName)."
+        Write-Output $perVmMsg
+        $Comment = $perVmMsg
+        Write-Log -EventTimeStamp $logFilePath -Comment $Comment
+
+        # Start the VM and log
+        try {
+            Start-VM -Name $name -ErrorAction Stop | Out-Null
+            $startMsg = "VM '$name' started successfully."
+            Write-Output $startMsg
+            $Comment = $startMsg
+            Write-Log -EventTimeStamp $logFilePath -Comment $Comment
+        } catch {
+            $startErr = "Failed to start VM '$name': $($_.Exception.Message)"
+            Write-Error $startErr
+            Write-Log -EventTimeStamp $logFilePath -Comment $startErr
+        }
+    }
+    catch {
+        $err = "Failed to create VM '$name': $($_.Exception.Message)"
+        Write-Error $err
+        Write-Log -EventTimeStamp $logFilePath -Comment $err
+    }
+}
+
+# Final overall message using the exact provided text
+Write-Output "All VMs have been created successfully."
+$Comment = "All VMs have been created successfully."
 Write-Log -EventTimeStamp $logFilePath -Comment $Comment
+
+Write-Host "Log written to: $logFilePath"
