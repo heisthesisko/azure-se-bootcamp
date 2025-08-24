@@ -82,11 +82,11 @@ if (-not $hvSwitch) {
 
 # Ensure folders exist
 $null = New-Item -ItemType Directory -Path $VmRoot -Force -ErrorAction SilentlyContinue
-$LogDir = 'C:\\LinuxLab\\LinuxLabBuilder.txt'
+$LogDir = 'C:\LinuxLab\Logs'
 $null = New-Item -ItemType Directory -Path $LogDir -Force -ErrorAction SilentlyContinue
 
 # Log file
-$logFilePath = Join-Path $LogDir ("HyperV-CreateVMs_{0}.log" -f (Get-Date -Format 'yyyyMMdd_HHmmss'))
+$logFilePath = Join-Path $LogDir ("HyperV-Create-RHEL-Based-VMs_{0}.log" -f (Get-Date -Format 'yyyyMMdd_HHmmss'))
 "Timestamp`tEvent" | Out-File -FilePath $logFilePath -Encoding UTF8
 
 # --------------------------
