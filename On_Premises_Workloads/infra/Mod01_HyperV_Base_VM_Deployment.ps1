@@ -5,10 +5,10 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Define variables
-$folderPath = "C:\\LinuxLab"
-$logFilePath = "C:\\LinuxLab\\LinuxLabBuilder.txt"
-$VHDPath = "C:\\LinuxLab\\VMFiles\\"
-$isoFolder = "C:\\LinuxLab\\"
+$folderPath = "C:\LinuxLab"
+$logFilePath = "C:\LinuxLab\Logs\Hyper-V-LinuxLab-Deployment.log"
+$VHDPath = "C:\LinuxLab\VMFiles\"
+$isoFolder = "C:\LinuxLab\"
 
 function Write-Log {
     param (
@@ -37,7 +37,7 @@ if (-Not (Test-Path $folderPath)) {
 }
 
 if (-Not (Test-Path $logFilePath)) {
-    Write-Host "LinuxLabBuilder.txt file does not exist. Creating the file..."
+    Write-Host "Hyper-V-LinuxLab-Deployment.log file does not exist. Creating the file..."
     New-Item -Path $logFilePath -ItemType File
 }
 
