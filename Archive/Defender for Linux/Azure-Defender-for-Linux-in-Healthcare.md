@@ -43,21 +43,21 @@ Healthcare systems (EHR, FHIR servers, PACS/DICOM archives, LIS, pharmacy) incre
 
 ```mermaid
 flowchart LR
-  subgraph On‑Prem DC / Edge
-    L1[RHEL/FHIR Server<br/>ePHI]:::linux
-    L2[Ubuntu PACS Gateway<br/>DICOM]:::linux
-    U1[HP‑UX / AIX / Solaris<br/>(Unix)]:::unix
-    FWD[Linux Syslog/CEF Forwarder<br/>with AMA]:::linux
+  subgraph "On-Prem DC / Edge"
+    L1["RHEL / FHIR Server (ePHI)"]:::linux
+    L2["Ubuntu PACS Gateway (DICOM)"]:::linux
+    U1["HP-UX / AIX / Solaris (Unix)"]:::unix
+    FWD["Linux Syslog/CEF Forwarder with AMA"]:::linux
   end
 
-  subgraph Azure
-    ARC[Azure Arc<br/>Connected Machine Agent]:::az
-    MDE[MDE for Linux<br/>EDR/AV]:::az
-    AMA[Azure Monitor Agent]:::az
-    LAW[Log Analytics Workspace]:::az
-    SNTL[Microsoft Sentinel]:::az
-    DFC[Defender for Cloud<br/>Defender for Servers P1/P2]:::az
-    RC[Azure Policy<br/>HIPAA/HITRUST]:::az
+  subgraph "Azure"
+    ARC["Azure Arc (Connected Machine Agent)"]:::az
+    MDE["MDE for Linux (EDR/AV)"]:::az
+    AMA["Azure Monitor Agent"]:::az
+    LAW["Log Analytics Workspace"]:::az
+    SNTL["Microsoft Sentinel"]:::az
+    DFC["Defender for Cloud / Defender for Servers P1/P2"]:::az
+    RC["Azure Policy (HIPAA/HITRUST)"]:::az
   end
 
   L1 -->|Arc agent| ARC
@@ -67,14 +67,13 @@ flowchart LR
   AMA --> LAW --> SNTL
   MDE --> SNTL
   DFC <--> ARC
-  RC -.assigns policies .-> ARC
+  RC -.-> ARC
 
-  U1 -- syslog/CEF --> FWD --> AMA
-  style LAW stroke-dasharray: 3 3
+  U1 -- "syslog/CEF" --> FWD --> AMA
 
-  classDef linux fill:#dfe,stroke:#096;
-  classDef unix fill:#fed,stroke:#b55;
-  classDef az fill:#e8f1ff,stroke:#2a5bd7;
+  classDef linux fill:#DFF0DF,stroke:#009966,stroke-width:1px;
+  classDef unix fill:#FFE6D6,stroke:#BB5555,stroke-width:1px;
+  classDef az fill:#E8F1FF,stroke:#2A5BD7,stroke-width:1px;
 ```
 
 **Notes:**  
