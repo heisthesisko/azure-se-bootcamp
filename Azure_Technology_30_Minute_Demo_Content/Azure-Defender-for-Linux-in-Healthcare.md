@@ -9,6 +9,9 @@
 <details>
 <summary>Click to expand</summary>
 
+> 💡 **TIP**  
+> Healthcare systems (EHR, FHIR servers, PACS/DICOM archives, LIS, pharmacy) increasingly run on Linux. Threats (ransomware, lateral movement to medical devices) often start on servers that host or are adjacent to **ePHI**. Defender for Cloud + Defender for Endpoint (MDE) brings EDR, hardening, vulnerability insights, and regulatory posture into one plane while you keep workloads **on-prem** via **Azure Arc**.
+> 
 >[!TIP]  
 >Healthcare systems (EHR, FHIR servers, PACS/DICOM archives, LIS, pharmacy) increasingly run on Linux. Threats (ransomware, lateral movement to medical devices) often start on servers that host or are adjacent to **ePHI**. Defender for Cloud + Defender for Endpoint (MDE) brings EDR, hardening, vulnerability insights, and regulatory posture into one plane while you keep workloads **on‑prem** via **Azure Arc**.
 >[!TIP]
