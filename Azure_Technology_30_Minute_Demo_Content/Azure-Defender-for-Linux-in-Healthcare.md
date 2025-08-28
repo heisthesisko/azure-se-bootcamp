@@ -3,21 +3,16 @@
 > **Audience:** IT Engineers in a healthcare provider  
 > **Goal:** Secure on‑prem Linux workloads with Microsoft Defender for Cloud (Defender for Servers) & MDE, mapped to healthcare controls and standards.
 
-I’ll speak in two voices throughout:
-
-- **Professor (PhD CS)** – technical depth and architecture.  
-- **Director of IT (Hospital)** – pragmatic commentary (pros/cons) for clinical environments.
-
 ---
 
 ## Slide 1 — Why this matters to providers
 
-**Professor:**  
-Healthcare systems (EHR, FHIR servers, PACS/DICOM archives, LIS, pharmacy) increasingly run on Linux. Threats (ransomware, lateral movement to medical devices) often start on servers that host or are adjacent to **ePHI**. Defender for Cloud + Defender for Endpoint (MDE) brings EDR, hardening, vulnerability insights, and regulatory posture into one plane while you keep workloads **on‑prem** via **Azure Arc**.
+>[!TIP]  
+>Healthcare systems (EHR, FHIR servers, PACS/DICOM archives, LIS, pharmacy) increasingly run on Linux. Threats (ransomware, lateral movement to medical devices) often start on servers that host or are adjacent to **ePHI**. Defender for Cloud + Defender for Endpoint (MDE) brings EDR, hardening, vulnerability insights, and regulatory posture into one plane while you keep workloads **on‑prem** via **Azure Arc**.
 
-**Director of IT (Hospital) – Commentary:**  
-- **Pro:** Unified visibility across EHR (Epic/Cerner) app servers, interface engines (HL7/FHIR), and imaging (PACS).  
-- **Con:** We must be deliberate to avoid sending **PHI** in logs; strict **DCR** filters and data minimization are non‑negotiable.
+>[!TIP]
+>**Pro:** Unified visibility across EHR (Epic/Cerner) app servers, interface engines (HL7/FHIR), and imaging (PACS).  
+>**Con:** We must be deliberate to avoid sending **PHI** in logs; strict **DCR** filters and data minimization are non‑negotiable.
 
 ---
 
