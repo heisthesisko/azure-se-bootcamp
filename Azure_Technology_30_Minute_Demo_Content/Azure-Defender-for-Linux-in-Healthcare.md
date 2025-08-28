@@ -29,8 +29,8 @@
 - Azure offers a **HIPAA BAA** and in‑scope services; you assess, configure, and operate securely.  
 - **Azure Policy Regulatory Compliance – HIPAA/HITRUST** initiative maps policy controls to the framework and shows a compliance dashboard (initiative GUID shown later).
 
-**Director of IT – Commentary:**  
-- We use the HIPAA/HITRUST initiative to **continuously audit** that Arc servers and connected services meet guardrails. This is evidence we share with internal audit and security committees (no replacement for full HIPAA/HITRUST program).
+>[!TIP]  
+>We use the HIPAA/HITRUST initiative to **continuously audit** that Arc servers and connected services meet guardrails. This is evidence we share with internal audit and security committees (no replacement for full HIPAA/HITRUST program).
 
 ---
 
@@ -82,8 +82,8 @@ flowchart LR
 - MDE for Linux supports RHEL 7+/8/9, Ubuntu 16.04–24.04 LTS, Debian 9–12, SLES 12/15, CentOS 7/8; Arm64 support available. (Note: Rocky/Alma may have limitations for Defender Vulnerability Management.)  
 - **Not supported:** AIX, HP‑UX, Solaris (use Unix strategy on Slide 13).
 
-**Director of IT – Commentary:**  
-- We run mixed RHEL and Ubuntu in our FHIR APIs and image routers. For Unix legacy (radiology gateways, lab middleware), we plan **log forwarding + 3rd‑party vuln feeds** into Sentinel.
+>[!TIP]  
+>We run mixed RHEL and Ubuntu in our FHIR APIs and image routers. For Unix legacy (radiology gateways, lab middleware), we plan **log forwarding + 3rd‑party vuln feeds** into Sentinel.
 
 ---
 
@@ -92,8 +92,8 @@ flowchart LR
 - **Plan 1 (P1):** EDR via MDE, basic hardening recommendations.  
 - **Plan 2 (P2):** Everything in P1 **plus** advanced capabilities like File Integrity Monitoring (FIM) and premium Defender Vulnerability Management features.
 
-**Director of IT – Commentary:**  
-- For **clinical production**, we standardize on **P2** to get **FIM** on `/etc`, PACS mounts, and middleware directories—useful for change control & incident forensics.
+>[!TIP]  
+>For **clinical production**, we standardize on **P2** to get **FIM** on `/etc`, PACS mounts, and middleware directories—useful for change control & incident forensics.
 
 ---
 
@@ -296,9 +296,9 @@ flowchart LR
 2. Install **AMA** on the forwarder and use Sentinel **Syslog/CEF via AMA** connectors.  
 3. Integrate **Tenable/Qualys** vulnerability findings into Sentinel to cover Unix exposure.
 
-**Director of IT – Commentary:**  
-- **Pro:** Centralizes alerts and asset risk across Linux & Unix without deploying agents we can’t support.  
-- **Con:** It’s telemetry only; no EDR containment on Unix. Compensate with **network controls**, bastionized admin, and change windows coordinated with clinical engineering.
+>[!TIP]  
+>**Pro:** Centralizes alerts and asset risk across Linux & Unix without deploying agents we can’t support.  
+>**Con:** It’s telemetry only; no EDR containment on Unix. Compensate with **network controls**, bastionized admin, and change windows coordinated with clinical engineering.
 
 ---
 
@@ -327,8 +327,8 @@ az policy assignment create \
 - **Azure Arc network requirements**: outbound TLS to Azure endpoints; can use Arc Gateway to simplify allow lists.  
 - **MDE Linux**: do **not** use PAC/WPAD or SSL interception; configure static proxy and bypass.
 
-**Director of IT – Commentary:**  
-- We place Arc & MDE egress on **dedicated proxy policy** and document endpoints with security. It avoids surprises during Joint Commission audits.
+>[!TIP]  
+>We place Arc & MDE egress on **dedicated proxy policy** and document endpoints with security. It avoids surprises during Joint Commission audits.
 
 ---
 
@@ -358,8 +358,8 @@ sequenceDiagram
 
 - Typical pricing reference: **P1** lower cost; **P2** higher (adds FIM, premium TVM). Use **tags**/policy to scope where P2 is required (e.g., prod clusters hosting ePHI).
 
-**Director of IT – Commentary:**  
-- We run **P2** for systems touching **ePHI** (FHIR/DICOM/data marts) and **P1** for dev/test to control spend while preserving EDR.
+>[!TIP]  
+>We run **P2** for systems touching **ePHI** (FHIR/DICOM/data marts) and **P1** for dev/test to control spend while preserving EDR.
 
 ---
 
@@ -404,8 +404,8 @@ mdatp threat summary
 - Secure FHIR servers (often on **RHEL/Ubuntu**) with MDE and FIM. Use Arc Policy to enforce **TLS, local firewall, SSH hardening**, and monitored `/etc` files.  
 - Use the HIPAA/HITRUST initiative to validate broader platform configuration.
 
-**Director of IT – Commentary:**  
-- We treat FHIR APIs as **clinical interfaces**—outage windows coordinated with the interface team. FIM provides change evidence for CAB.
+>[!TIP]  
+>We treat FHIR APIs as **clinical interfaces**—outage windows coordinated with the interface team. FIM provides change evidence for CAB.
 
 ---
 
@@ -524,14 +524,3 @@ az policy assignment create --name hipaa-hitrust --policy a169a624-5599-4385-a69
 4. Browse **Policy → Regulatory compliance** → **HIPAA/HITRUST** posture view.
 
 ---
-
-## (Optional) Git commands to commit this file to GitHub
-
-```bash
-# From your repo root
-git checkout -b security/azure-defender-linux-healthcare
-git add Azure-Defender-for-Linux-in-Healthcare.md
-git commit -m "Add Azure Defender for Linux in Healthcare (30-min presentation with demos)"
-git push -u origin security/azure-defender-linux-healthcare
-# Open a Pull Request in your GitHub repo
-```
