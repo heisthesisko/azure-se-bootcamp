@@ -27,36 +27,31 @@
 ## Slide 3 — Reference architecture (hybrid)
 ```mermaid
 flowchart LR
-  subgraph "On‑Premises (Hospital)"
-    WIN["Windows Server
-HL7 Interface Engine
-(MLLP/Files)"]:::on
-    LNX["Linux Server
-Device/LIS Adapters"]:::on
-    OCP["OpenShift (ARO‑on‑prem)
-Edge Integration Apps"]:::on
+  subgraph OnPrem["On-Premises (Hospital)"]
+    WIN["Windows Server<br/>HL7 Interface Engine<br/>(MLLP &amp; Files)"]:::on
+    LNX["Linux Server<br/>Device &amp; LIS Adapters"]:::on
+    OCP["OpenShift (ARO on-prem)<br/>Edge Integration Apps"]:::on
     NET["VPN / ExpressRoute"]:::net
   end
 
-  subgraph "Azure (US Region)"
-    LA["Azure Logic Apps
-(HL7→FHIR Orchestration)"]:::az
-    FHIR["Azure API for FHIR
-(FHIR R4 Service)"]:::az
-    APIM["Azure API Management
-(FHIR Gateway, OAuth2, RL)"]:::az
-    PRV["Private Link / Private DNS"]:::az
+  subgraph AzureRegion["Azure (US Region)"]
+    LA["Azure Logic Apps<br/>(HL7 → FHIR Orchestration)"]:::az
+    FHIR["Azure API for FHIR<br/>(FHIR R4 Service)"]:::az
+    APIM["Azure API Management<br/>(FHIR Gateway, OAuth2, RL)"]:::az
+    PRV["Private Link &amp; Private DNS"]:::az
   end
 
-  WIN -->|HL7v2 (ADT/ORU/ORM)| OCP
-  LNX -->|HL7v2 / Files / REST| OCP
-  OCP -->|HTTPS (POST HL7)| LA
-  LA -->|$convert-data| FHIR
-  APIM -->|JWT/OAuth2| FHIR
-  WIN -. FHIR consumer .-> APIM
+  WIN -->|"HL7v2 (ADT / ORU / ORM)"| OCP
+  LNX -->|"HL7v2 / Files / REST"| OCP
+  OCP -->|"HTTPS (POST HL7)"| LA
+  LA -->|"$convert-data"| FHIR
+  APIM -->|"JWT / OAuth2"| FHIR
+  WIN -. "FHIR consumer" .-> APIM
+
   classDef on fill:#f6f6f6,stroke:#666;
   classDef az fill:#e8f1ff,stroke:#2a5bd7;
   classDef net fill:#fff3cd,stroke:#c69500;
+
 ```
 **Notes:** On‑prem adapters can run on Windows/Linux or **OpenShift (ARO)**. All PHI flows over **private** channels (VPN/ER), with **APIM** enforcing auth, quotas, and schema/size checks. `$convert-data` uses Microsoft‑supplied Liquid templates for HL7→FHIR mapping.
 
