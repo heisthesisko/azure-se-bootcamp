@@ -45,19 +45,20 @@
 
 ```mermaid
 flowchart LR
-  subgraph Edge["On-prem Clinics & Home | Linux + OpenShift"]
-    G1["Glucose Monitor"]:::dev --> GW["Linux Edge Gateway<br/>IoT Edge MQTT/AMQP"];
-    H1["Heart-rate Sensor"]:::dev --> GW;
-    V1["Vitals (BP SpO2)"]:::dev --> GW;
-    GW -->| "MQTT 3.1.1 TLS1.2 8883" | BR["Edge MQTT Broker<br/>IoT Edge"];
+  subgraph EdgeZone["On-prem Clinics and Home | Linux and OpenShift"]
+    G1["Glucose Monitor"]:::dev --> GW["Linux Edge Gateway<br/>IoT Edge MQTT and AMQP"]
+    H1["Heart-rate Sensor"]:::dev --> GW
+    V1["Vitals (BP SpO2)"]:::dev --> GW
+    GW -->|"MQTT 3.1.1 TLS1.2 8883"| BR["Edge MQTT Broker<br/>IoT Edge"]
   end
 
-  BR -->| "Upstream MQTT/AMQP TLS" | IOTHUB{{"Azure IoT Hub"}};
-  IOTHUB -- "Routes" --> ASA[["Azure Stream Analytics"]];
-  ASA -- "Output" --> FN[("Azure Functions<br/>Python on Linux")];
-  FN --> FHIR[("Azure Health Data Services<br/>FHIR Service R4")];
+  BR -->|"Upstream MQTT and AMQP TLS"| IOTHUB{{Azure IoT Hub}}
+  IOTHUB -- "Routes" --> ASA[[Azure Stream Analytics]]
+  ASA -- "Output" --> FN[("Azure Functions<br/>Python on Linux)]
+  FN --> FHIR[("Azure Health Data Services<br/>FHIR Service R4)]
 
   classDef dev fill:#eef,stroke:#447;
+
 
 ```
 
