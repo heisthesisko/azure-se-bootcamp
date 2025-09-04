@@ -54,6 +54,7 @@ flowchart LR
 
 classDef dev fill:#eef,stroke:#447;
 ```
+
 **Notes:** MQTT to IoT Hub must use **TLS 1.2**; IoT Hub supports **MQTT 3.1.1 on 8883** or **MQTT over WebSockets on 443**; use **X.509** device auth with **DPS** for zero‑touch provisioning. citeturn2search0turn0search0turn0search10
 
 ---
@@ -65,10 +66,12 @@ classDef dev fill:#eef,stroke:#447;
 - **Functions (Linux)** use **VNet integration** for **outbound** private calls to FHIR/APIM; inbound Function is HTTP‑triggered only by **ASA output**. citeturn4search10
 
 **CLI tip (discover groupIds for Private Endpoints):**
+
 ```bash
 az network private-link-resource list   --name $IOTHUB_NAME --type Microsoft.Devices/IotHubs -g $RG -o table
 # Use the returned groupId with az network private-endpoint create --group-ids <id>
-``` 
+```
+
 citeturn12search0
 
 ---
@@ -111,9 +114,11 @@ flowchart TD
   A -- Output 2 (optional) --> S[Storage / ADX]
   F -- POST /Observation --> R[(FHIR Service)]
 ```
+
 - **ASA → Function output** lets you run code for enrichment, validation, and calls to FHIR with managed identity. citeturn0search2turn0search7
 
 **Example ASA Query (thresholds + windowed smoothing):**
+
 ```sql
 WITH Base AS (
   SELECT
@@ -204,6 +209,7 @@ az network private-endpoint create -g $RG -n pe-iothub --vnet-name $VNET --subne
 ## 9. Function (Python on Linux) — FHIR mapping
 
 - HTTP‑triggered by **ASA output** with managed identity auth to FHIR:
+
 ```python
 # functions/triage_function/__init__.py (excerpt)
 from azure.identity import DefaultAzureCredential
@@ -238,6 +244,7 @@ def main(req):
     resps = [requests.post(f"{FHIR_URL}/Observation", headers=h, data=json.dumps(o)) for o in obs]
     return {{ "posted": [r.status_code for r in resps] }}
 ```
+
 > FHIR token audience is the **service URL**; managed identity needs **FHIR Data Contributor** role. citeturn11search1
 
 ---
@@ -272,6 +279,7 @@ while True:
     client.publish(PUB_TOPIC, json.dumps(msg), qos=1)
     time.sleep(5)
 ```
+
 > **MQTT 3.1.1 over TLS 1.2** and port **8883** required. For devices, prefer **X.509 CA attestation** with **DPS**. citeturn2search0turn0search15turn2search1
 
 ---
@@ -279,19 +287,23 @@ while True:
 ## 11. Observability — Kusto Samples
 
 - **Message ingress / drop** (route health):
+
 ```kusto
 AzureMetrics
 | where ResourceProvider == "MICROSOFT.DEVICES/IOTHUBS"
 | where MetricName in ("d2c.telemetry.egress.success","d2c.telemetry.egress.dropped")
 | summarize sum(Total) by MetricName, bin(TimeGenerated, 5m)
 ```
+
 - **Function errors**:
+
 ```kusto
 AppTraces
 | where _ResourceId contains "sites/func-rpm-"
 | where Level == "Error"
 | project TimeGenerated, Message
-``` 
+```
+
 *Metrics reference:* IoT Hub emits platform metrics including routing latency and drops. citeturn5search13
 
 ---
@@ -356,6 +368,7 @@ HIPAA_ID=$(az policy definition list   --query "[?contains(displayName, 'HIPAA H
 # Assign at subscription scope
 az policy assignment create -g ""   --name hipaa-hitrust-rpm   --display-name "HIPAA/HITRUST RPM Baseline"   --policy $HIPAA_ID --scope /subscriptions/$SUB
 ```
+
 *Regulatory initiative reference.* citeturn3search0
 
 ---
@@ -376,4 +389,5 @@ az policy assignment create -g ""   --name hipaa-hitrust-rpm   --display-name "H
 ---
 
 ### Attributions / Key Docs
+
 IoT Hub MQTT/TLS, ports, quotas, and DR; ASA→Functions; AHDS FHIR/DICOM/MedTech; APIM + Private Link; Azure Policy HIPAA/HITRUST; Defender for IoT. citeturn2search0turn0search0turn0search15turn10search1turn0search4turn0search2turn0search7turn8search1turn5search0turn4search1turn4search2turn3search0turn3search3
