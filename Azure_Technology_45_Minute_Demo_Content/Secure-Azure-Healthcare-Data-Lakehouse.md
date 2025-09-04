@@ -42,7 +42,6 @@
 ---
 
 ## Slide 4 — Reference architecture (Hybrid on‑premises to Azure)
-
 ```mermaid
 flowchart LR
   subgraph "On-Premises"
