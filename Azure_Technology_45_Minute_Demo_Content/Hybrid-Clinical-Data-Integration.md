@@ -63,12 +63,11 @@ flowchart LR
   ENTRA --- ADF
   ENTRA --- SQLMI
 
-  OnPremNet((On-Prem Network)):::net ---|"VPN / ExpressRoute"|--- AzureNet((Azure VNet)):::net
+  OnPremNet((On-Prem Network)):::net ---|VPN / ExpressRoute| AzureNet((Azure VNet)):::net
 
   classDef onprem fill:#f6f6f6,stroke:#888;
   classDef az fill:#e8f1ff,stroke:#2a5bd7;
   classDef net fill:#fff3cd,stroke:#c69500;
-
 ```
 
 **Notes:** ADF uses **Self-hosted IR** on an Arc-managed on‑prem server to pull from Epic/Cerner and push to SQL MI over private connectivity. All cloud endpoints are **private** and **AAD-protected**.
