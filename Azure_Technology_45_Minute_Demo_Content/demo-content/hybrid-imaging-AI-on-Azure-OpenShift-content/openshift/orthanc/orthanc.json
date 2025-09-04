@@ -1,0 +1,14 @@
+{
+  "Name": "Orthanc",
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db-index",
+  "DicomAet": "ORTHANC",
+  "DicomPort": 4242,
+  "HttpPort": 8042,
+  "HttpServerEnabled": true,
+  "AuthenticationEnabled": true,
+  "RegisteredUsers": { "orthanc": "orthanc" },
+  "MaximumStorageSize": 0,
+  "MaximumPatientCount": 0,
+  "DicomWeb": { "Enable": true, "Root": "/dicom-web/" }
+}
