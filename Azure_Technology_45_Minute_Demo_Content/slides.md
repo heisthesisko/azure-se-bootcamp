@@ -28,28 +28,28 @@ duration: "45 minutes"
 
 ```mermaid
 flowchart LR
-  subgraph Edge["On‑prem Clinics & Home | Linux + OpenShift"]
-    G1[Glucose Monitor]:::dev --> GW[Linux Edge Gateway<br/>IoT Edge MQTT/AMQP]
-    H1[Heart-rate Sensor]:::dev --> GW
-    V1[Vitals (BP/SpO2)]:::dev --> GW
-    GW -->|MQTT 3.1.1 TLS1.2 8883| BR[Edge MQTT Broker / IoT Edge]
-    BR -->|DPS attestation (X.509)| GW
+  subgraph Edge["On-prem Clinics & Home | Linux + OpenShift"]
+    G1["Glucose Monitor"]:::dev --> GW["Linux Edge Gateway<br/>IoT Edge (MQTT &amp; AMQP)"]
+    H1["Heart-rate Sensor"]:::dev --> GW
+    V1["Vitals (BP)<br/>SpO2"]:::dev --> GW
+    GW -->|"MQTT 3.1.1 TLS1.2 8883"| BR["Edge MQTT Broker<br/>IoT Edge"]
+    BR -->|"DPS attestation (X.509)"| GW
   end
 
-  BR -->|Upstream MQTT/AMQP TLS| IOTHUB{{Azure IoT Hub}}
-  IOTHUB -- Routes --> ASA[[Azure Stream Analytics]]
-  ASA -- Output --> FN[(Azure Functions<br/>Python on Linux)]
-  FN --> FHIR[(Azure Health Data Services<br/>FHIR Service R4)]
-  FN -. optional .-> AI[(AI Early Warning<br/>(Anomaly/Sepsis risk))]
-  FHIR -->|FHIR R4 REST| EPIC[(EPIC EHR<br/>(FHIR/HL7v2/Bridges))]
+  BR -->|"Upstream MQTT & AMQP TLS"| IOTHUB{{Azure IoT Hub}}
+  IOTHUB -- "Routes" --> ASA[[Azure Stream Analytics]]
+  ASA -- "Output" --> FN[("Azure Functions<br/>Python on Linux")]
+  FN --> FHIR[("Azure Health Data Services<br/>FHIR Service R4")]
+  FN -. "optional" .-> AI[("AI Early Warning<br/>(Anomaly &amp; Sepsis risk)")]
+  FHIR -->|"FHIR R4 REST"| EPIC[("EPIC EHR<br/>FHIR<br/>HL7v2<br/>Bridges")]
 
   subgraph Sec["Security Boundary (Azure VNet)"]
-    IOTHUB -. Private Endpoint .- VNET[(VNet + Private DNS)]
-    ASA -. DIAG .- LA[(Log Analytics)]
-    FN -. VNet Integration .- VNET
-    FHIR -. Private Endpoint .- VNET
-    KV[(Key Vault/HSM)] -. CMK .- FHIR
-    DEF[(Defender for IoT)] -. Telemetry .- LA
+    IOTHUB -. "Private Endpoint" .-> VNET[("VNet + Private DNS")]
+    ASA -. "DIAG" .-> LA[("Log Analytics")]
+    FN -. "VNet Integration" .-> VNET
+    FHIR -. "Private Endpoint" .-> VNET
+    KV[("Key Vault/HSM")] -. "CMK" .-> FHIR
+    DEF[("Defender for IoT")] -. "Telemetry" .-> LA
   end
 
 classDef dev fill:#eef,stroke:#447;
