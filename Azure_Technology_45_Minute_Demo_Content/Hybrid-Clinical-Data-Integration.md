@@ -40,14 +40,14 @@
 
 ```mermaid
 flowchart LR
-  subgraph On-Premises
+  subgraph OnPrem["On-Premises"]
     EHR1["Epic EHR<br/>(DB &amp; Extracts)"]:::onprem
     EHR2["Cerner EHR<br/>(DB &amp; Extracts)"]:::onprem
     HL7["HL7 Interface Engine<br/>(Mirth &amp; Rhapsody)"]:::onprem
     OPS["Windows &amp; Linux Servers<br/>(Azure Arc)"]:::onprem
   end
 
-  subgraph Azure (US Region)
+  subgraph AzureRegion["Azure (US Region)"]
     ADF["Azure Data Factory<br/>(Orchestration)"]:::az
     IR["Self-hosted Integration Runtime<br/>(on-prem, Arc-managed)"]:::onprem
     SQLMI["Azure SQL Managed Instance<br/>(Clinical DB, Private)"]:::az
@@ -68,6 +68,7 @@ flowchart LR
   classDef onprem fill:#f6f6f6,stroke:#888;
   classDef az fill:#e8f1ff,stroke:#2a5bd7;
   classDef net fill:#fff3cd,stroke:#c69500;
+
 ```
 
 **Notes:** ADF uses **Self-hosted IR** on an Arc-managed on‑prem server to pull from Epic/Cerner and push to SQL MI over private connectivity. All cloud endpoints are **private** and **AAD-protected**.
