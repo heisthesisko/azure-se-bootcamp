@@ -42,6 +42,7 @@
 ---
 
 ## Slide 4 — Reference architecture (Hybrid on‑premises to Azure)
+
 ```mermaid
 flowchart LR
   subgraph Edge["On-prem Clinics & Home | Linux + OpenShift"]
@@ -69,6 +70,7 @@ flowchart LR
   end
 
   classDef dev fill:#eef,stroke:#447;
+
 ```
 
 **Notes:** On-premises connects to Azure over private secure network (ExpressRoute or site-to-site VPN). Data Lake (ADLS) and Synapse use **Private Endpoints**; Key Vault holds CMKs; Purview scans/catalogs ADLS and Synapse. All in **US regions**.
