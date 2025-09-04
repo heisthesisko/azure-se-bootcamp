@@ -64,17 +64,19 @@ flowchart LR
 ## Slide 5 — Data Flow (Scan → Archive → AI → Clinician)
 ```mermaid
 sequenceDiagram
-    participant Modality as Imaging Device (CT/MRI)
-    participant PACS as On-Prem PACS (DCM4CHEE)
+    participant Modality as Imaging Device CT MRI
+    participant PACS as On-Prem PACS DCM4CHEE
     participant Cloud as Azure Blob Archive
     participant AI as Azure ML Model
     participant Radiologist as Radiologist Viewer
-    Modality->>PACS: 1) DICOM C-STORE new study
-    PACS->>Cloud: 2) Push via DICOMweb/connector
-    Cloud->>AI: 3) Trigger inference for new objects
-    AI->>Cloud: Fetch DICOM; analyze; write results
-    AI-->>PACS: (optional) Notify/attach SR/JSON
-    Radiologist->>PACS: 4) Review images + AI result
+
+    Modality->>PACS: Step 1 DICOM C-STORE new study
+    PACS->>Cloud: Step 2 Push via DICOMweb connector
+    Cloud->>AI: Step 3 Trigger inference for new objects
+    AI->>Cloud: Fetch DICOM then analyze then write results
+    AI-->>PACS: Optional Notify attach SR JSON
+    Radiologist->>PACS: Step 4 Review images and AI result
+
 ```
 
 ---
