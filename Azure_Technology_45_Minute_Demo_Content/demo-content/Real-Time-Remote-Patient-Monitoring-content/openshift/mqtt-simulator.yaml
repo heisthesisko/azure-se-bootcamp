@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: iothub-device-secret
+type: Opaque
+stringData:
+  IOTHUB_HOST: "ioth-<env>.azure-devices.net"
+  DEVICE_ID: "demo-device"
+  DEVICE_KEY: "<base64-device-key>"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mqtt-simulator
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: sim
+            image: python:3.11-slim
+            command: ["bash","-lc","pip install paho-mqtt && python /app/send_telemetry.py"]
+            envFrom:
+            - secretRef:
+                name: iothub-device-secret
+            volumeMounts:
+            - name: app
+              mountPath: /app
+          volumes:
+          - name: app
+            configMap:
+              name: device-simulator-code
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: device-simulator-code
+data:
+  send_telemetry.py: |
+    #!/usr/bin/env python3
+    import time, json, hmac, hashlib, base64, urllib.parse, os, ssl
+    import paho.mqtt.client as mqtt
+    
+    IOTHUB_HOST = os.environ["IOTHUB_HOST"]  # e.g., ioth-xyz.azure-devices.net
+    DEVICE_ID   = os.environ["DEVICE_ID"]
+    DEVICE_KEY  = os.environ.get("DEVICE_KEY")  # For demo only; prefer X.509 in production
+    PORT=8883
+    
+    def sas_token(uri, key, ttl=3600):
+        expiry = int(time.time()) + ttl
+        sign_key = "%s\n%d" % ((urllib.parse.quote(uri, safe='')), expiry)
+        sig = base64.b64encode(hmac.new(base64.b64decode(key), sign_key.encode('utf-8'), hashlib.sha256).digest())
+        return f"SharedAccessSignature sr={urllib.parse.quote(uri)}&sig={urllib.parse.quote(sig)}&se={expiry}"
+    
+    username = f"{IOTHUB_HOST}/{DEVICE_ID}/?api-version=2021-04-12"
+    client = mqtt.Client(client_id=DEVICE_ID, protocol=mqtt.MQTTv311)
+    if DEVICE_KEY:
+        client.username_pw_set(username, password=sas_token(f"{IOTHUB_HOST}/devices/{DEVICE_ID}", DEVICE_KEY))
+    client.tls_set(certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2)
+    client.connect(IOTHUB_HOST, PORT)
+    
+    topic = f"devices/{DEVICE_ID}/messages/events/"
+    i=0
+    while True:
+        payload = {"telemetry":{"hr": 72 + (i%5), "glucose": 105.0 + (i%3), "spo2": 98}, "deviceId": DEVICE_ID}
+        client.publish(topic, json.dumps(payload), qos=1)
+        print("sent", payload)
+        time.sleep(5)
+        i+=1
