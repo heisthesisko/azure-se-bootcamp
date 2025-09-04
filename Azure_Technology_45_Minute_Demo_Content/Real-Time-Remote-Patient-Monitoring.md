@@ -104,12 +104,14 @@ az network private-link-resource list   --name $IOTHUB_NAME --type Microsoft.Dev
 ```mermaid
 flowchart TD
   subgraph Ingest
-    D1>Device MQTT] -- TLS1.2 --> I[IoT Hub]
+    D1["Device MQTT"] -- "TLS1.2" --> I["IoT Hub"]
   end
-  I -- Route: vitals --> A[Stream Analytics Job]
-  A -- Output 1 --> F[Azure Function (HTTP trigger)]
-  A -- Output 2 (optional) --> S[Storage / ADX]
-  F -- POST /Observation --> R[(FHIR Service)]
+
+  I -- "Route: vitals" --> A["Stream Analytics Job"]
+  A -- "Output 1" --> F["Azure Function (HTTP trigger)"]
+  A -- "Output 2 (optional)" --> S["Storage / ADX"]
+  F -- "POST /Observation" --> R[("FHIR Service")]
+
 ```
 - **ASA → Function output** lets you run code for enrichment, validation, and calls to FHIR with managed identity. citeturn0search2turn0search7
 
