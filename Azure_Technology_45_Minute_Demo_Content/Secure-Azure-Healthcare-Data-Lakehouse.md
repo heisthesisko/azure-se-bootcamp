@@ -44,41 +44,31 @@
 ## Slide 4 — Reference architecture (Hybrid on‑premises to Azure)
 ```mermaid
 flowchart LR
-  subgraph "On-Premises"
-    WIN["Windows Server (on-prem data source)
-EHR database, file exports"]:::onprem
-    LIN["Linux Server (on-prem data source)
-FHIR/HL7 engine"]:::onprem
-    OCP["OpenShift Container Platform
-(on-prem apps)"]:::onprem
-    ER["ExpressRoute / VPN"]:::net
+  subgraph Edge["On-prem Clinics & Home | Linux + OpenShift"]
+    G1[Glucose Monitor]:::dev --> GW[Linux Edge Gateway<br/>IoT Edge MQTT/AMQP]
+    H1[Heart-rate Sensor]:::dev --> GW
+    V1[Vitals (BP/SpO2)]:::dev --> GW
+    GW -->| MQTT 3.1.1 TLS1.2 8883 | BR[Edge MQTT Broker<br/>IoT Edge]
+    BR -->| DPS attestation (X.509) | GW
   end
 
-  subgraph "Azure (US Region Virtual Network)"
-    ADLS["ADLS Gen2
-Secure Data Lake"]:::az
-    SYN["Azure Synapse Analytics
-(Spark & SQL Pools)"]:::az
-    PURV["Microsoft Purview
-(Data Governance)"]:::az
-    KV["Azure Key Vault
-(CMK & Secrets)"]:::az
+  BR -->| Upstream MQTT/AMQP TLS | IOTHUB{{Azure IoT Hub}}
+  IOTHUB -- Routes --> ASA[[Azure Stream Analytics]]
+  ASA -- Output --> FN[(Azure Functions<br/>Python on Linux)]
+  FN --> FHIR[(Azure Health Data Services<br/>FHIR Service R4)]
+  FN -. optional .-> AI[(AI Early Warning<br/>(Anomaly/Sepsis risk))]
+  FHIR -->| FHIR R4 REST | EPIC[(EPIC EHR<br/>(FHIR/HL7v2/Bridges))]
+
+  subgraph Sec["Security Boundary (Azure VNet)"]
+    IOTHUB -. Private Endpoint .- VNET[(VNet + Private DNS)]
+    ASA -. DIAG .- LA[(Log Analytics)]
+    FN -. VNet Integration .- VNET
+    FHIR -. Private Endpoint .- VNET
+    KV[(Key Vault/HSM)] -. CMK .- FHIR
+    DEF[(Defender for IoT)] -. Telemetry .- LA
   end
 
-  OnPremNet((On-Premises Network)) --- ER --- AzureCloud((Azure VNet))
-  WIN --secure transfer--> ADLS
-  LIN --secure transfer--> ADLS
-  OCP --API/SDK--> ADLS
-  ADLS --Private Endpoint--> SYN
-  SYN --analytics--> ADLS
-  KV -. keys .- ADLS
-  KV -. keys .- SYN
-  PURV -. scan .- ADLS
-  PURV -. catalog .- SYN
-
-  classDef onprem fill:#f6f6f6,stroke:#888;
-  classDef az fill:#e8f1ff,stroke:#2a5bd7;
-  classDef net fill:#fff3cd,stroke:#c69500;
+  classDef dev fill:#eef,stroke:#447;
 ```
 
 **Notes:** On-premises connects to Azure over private secure network (ExpressRoute or site-to-site VPN). Data Lake (ADLS) and Synapse use **Private Endpoints**; Key Vault holds CMKs; Purview scans/catalogs ADLS and Synapse. All in **US regions**.
