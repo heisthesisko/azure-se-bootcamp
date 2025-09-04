@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "triggers": {
+    "receive_hl7": {
+      "type": "Request",
+      "kind": "Http",
+      "inputs": {
+        "schema": {}
+      }
+    }
+  },
+  "actions": {
+    "convert_to_fhir": {
+      "type": "Http",
+      "inputs": {
+        "method": "POST",
+        "uri": "https://{fhirName}.azurehealthcareapis.com/$convert-data",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "resourceType": "Parameters",
+          "parameter": [
+            {
+              "name": "inputData",
+              "value": "@{base64(triggerBody())}"
+            },
+            {
+              "name": "inputDataType",
+              "value": "Hl7v2"
+            },
+            {
+              "name": "templateCollectionReference",
+              "value": "microsofthealth/hl7v2templates:default"
+            },
+            {
+              "name": "rootTemplate",
+              "value": "ADT_A01"
+            }
+          ]
+        },
+        "authentication": {
+          "type": "ManagedServiceIdentity"
+        }
+      }
+    },
+    "post_bundle": {
+      "type": "Foreach",
+      "foreach": "@body('convert_to_fhir').entry",
+      "actions": {
+        "post_resource": {
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@{concat('https://{fhirName}.azurehealthcareapis.com/', items('post_bundle').resource.resourceType)}",
+            "headers": {
+              "Content-Type": "application/fhir+json"
+            },
+            "body": "@{items('post_bundle').resource}",
+            "authentication": {
+              "type": "ManagedServiceIdentity"
+            }
+          }
+        }
+      }
+    }
+  }
+}

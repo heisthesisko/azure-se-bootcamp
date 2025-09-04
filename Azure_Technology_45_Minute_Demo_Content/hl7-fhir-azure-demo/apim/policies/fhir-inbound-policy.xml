@@ -1,0 +1,15 @@
+<policies>
+  <inbound>
+    <base />
+    <validate-jwt header-name="Authorization" require-scheme="Bearer" failed-validation-httpcode="401">
+      <openid-config url="https://login.microsoftonline.com/<TENANT_ID>/v2.0/.well-known/openid-configuration" />
+      <audiences>
+        <audience>https://{fhirName}.azurehealthcareapis.com</audience>
+      </audiences>
+    </validate-jwt>
+    <rate-limit calls="100" renewal-period="60" />
+  </inbound>
+  <backend><base /></backend>
+  <outbound><base /></outbound>
+  <on-error><base /></on-error>
+</policies>

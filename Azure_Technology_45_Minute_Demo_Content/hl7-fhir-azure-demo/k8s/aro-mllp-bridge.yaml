@@ -1,0 +1,35 @@
+
+apiVersion: v1
+kind: Namespace
+metadata: { name: interop }
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: la-secret, namespace: interop }
+type: Opaque
+stringData:
+  url: "https://<logic-app-trigger-url>"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: hl7-mllp-bridge, namespace: interop }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: hl7-mllp-bridge } }
+  template:
+    metadata: { labels: { app: hl7-mllp-bridge } }
+    spec:
+      containers:
+      - name: bridge
+        image: ghcr.io/example/hl7-mllp-http-bridge:latest
+        env:
+        - { name: LISTEN_PORT, value: "2575" }
+        - { name: TARGET_URL, valueFrom: { secretKeyRef: { name: la-secret, key: url } } }
+        ports: [{ containerPort: 2575 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: hl7-mllp-bridge, namespace: interop }
+spec:
+  selector: { app: hl7-mllp-bridge }
+  ports: [{ name: mllp, port: 2575, targetPort: 2575, protocol: TCP }]
