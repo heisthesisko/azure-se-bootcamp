@@ -61,18 +61,20 @@ flowchart LR
 ```mermaid
 sequenceDiagram
   autonumber
-  participant EHR as On‑Prem EHR/LIS
+  participant EHR as On-Prem EHR/LIS
   participant Edge as Edge Adapter (OpenShift)
   participant LA as Logic App
   participant FHIR as Azure FHIR Service
   participant APIM as API Management
+
   EHR->>Edge: HL7v2 ADT^A01 (MLLP/File/HTTP)
   Edge->>LA: HTTP POST (HL7 payload)
   LA->>FHIR: POST $convert-data (templates=hl7v2 default, root=ADT_A01)
   FHIR-->>LA: FHIR Bundle (Patient, Encounter, etc.)
   LA->>FHIR: POST/PUT resources (transaction)
   Note over FHIR: Data at rest encrypted; RBAC via Entra ID (AAD)
-  APIM->>FHIR: Client FHIR queries (JWT validated, rate‑limited)
+  APIM->>FHIR: Client FHIR queries (JWT validated, rate-limited)
+
 ```
 
 ---
