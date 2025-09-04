@@ -74,9 +74,7 @@ sequenceDiagram
   FHIR-->>LA: FHIR Bundle (Patient, Encounter, etc.)
   LA->>FHIR: POST or PUT resources (transaction)
 
-  Note over FHIR,APIM
-    Data at rest encrypted; RBAC via Entra ID (AAD)
-  end note
+  Note right of FHIR: Data at rest encrypted; RBAC via Entra ID (AAD)
 
   APIM->>FHIR: Client FHIR queries (JWT validated, rate-limited)
 
