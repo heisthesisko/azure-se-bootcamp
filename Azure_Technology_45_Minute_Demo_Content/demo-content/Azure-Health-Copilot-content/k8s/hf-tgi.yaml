@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hf-tgi
+  labels: { app: hf-tgi }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: hf-tgi } }
+  template:
+    metadata: { labels: { app: hf-tgi } }
+    spec:
+      containers:
+        - name: tgi
+          image: ghcr.io/huggingface/text-generation-inference:1.4
+          args: ["--model-id", "TheBloke/Llama-2-7B-Chat-GGUF", "--hostname", "0.0.0.0", "--port", "8080"]
+          ports: [{ containerPort: 8080 }]
+          resources:
+            requests: { cpu: "1", memory: "2Gi" }
+            limits: { cpu: "2", memory: "4Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hf-tgi-svc
+spec:
+  selector: { app: hf-tgi }
+  ports: [{ name: http, port: 80, targetPort: 8080 }]
