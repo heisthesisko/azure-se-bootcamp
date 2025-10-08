@@ -1,6 +1,0 @@
-{
-  "simple_alignment.fastq1": "abfss://bronze@<storage>.dfs.core.windows.net/samples/sample_R1.fastq.gz",
-  "simple_alignment.fastq2": "abfss://bronze@<storage>.dfs.core.windows.net/samples/sample_R2.fastq.gz",
-  "simple_alignment.sample_id": "SAMPLE001",
-  "simple_alignment.ref_fasta": "abfss://bronze@<storage>.dfs.core.windows.net/ref/hg38.fa"
-}
